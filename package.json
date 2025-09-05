@@ -25,6 +25,7 @@
 		"@typescript-eslint/eslint-plugin": "^8.34.1",
 		"@typescript-eslint/parser": "^8.34.1",
 		"autoprefixer": "^10.4.21",
+		"dotenv": "^16.4.5",
 		"eslint": "^9.29.0",
 		"eslint-config-prettier": "^10.1.5",
 		"eslint-define-config": "^2.1.0",
@@ -40,6 +41,9 @@
 		"vite": "^6.2.6"
 	},
 	"dependencies": {
-		"@libsql/client": "^0.15.9"
+		"@libsql/client": "^0.15.9",
+		"clsx": "^2.1.1",
+		"lucide-svelte": "^0.542.0",
+		"tailwind-merge": "^3.3.1"
 	}
 }
