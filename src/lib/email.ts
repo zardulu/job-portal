@@ -1,5 +1,7 @@
 // Simple email service for sending magic links
 // In production, you'd want to use a service like SendGrid, Mailgun, or similar
+import { Resend } from 'resend';
+import { env } from '$env/dynamic/private';
 
 export interface EmailData {
 	to: string;
@@ -8,31 +10,41 @@ export interface EmailData {
 	html?: string;
 }
 
+const resend = env.RESEND_API_KEY ? new Resend(env.RESEND_API_KEY) : null;
+
 export async function sendEmail(data: EmailData): Promise<boolean> {
 	try {
-		// For development, just log the email content
-		console.log('\n📧 ===== MAGIC LINK EMAIL =====');
-		console.log(`To: ${data.to}`);
-		console.log(`Subject: ${data.subject}`);
-		console.log('\n📝 Email Content:');
-		console.log(data.text);
-		console.log('\n🔗 Magic Link (copy this):');
-		
-		// Extract the magic link from the email text
-		const linkMatch = data.text.match(/https?:\/\/[^\s]+/);
-		if (linkMatch) {
-			console.log(`\x1b[32m${linkMatch[0]}\x1b[0m`); // Green color for the link
+		// If no API key is configured, log to console (dev fallback)
+		if (!resend) {
+			console.log('\n📧 ===== MAGIC LINK EMAIL =====');
+			console.log(`To: ${data.to}`);
+			console.log(`Subject: ${data.subject}`);
+			console.log('\n📝 Email Content:');
+			console.log(data.text);
+			console.log('\n🔗 Magic Link (copy this):');
+			
+			// Extract the magic link from the email text
+			const linkMatch = data.text.match(/https?:\/\/[^\s]+/);
+			if (linkMatch) {
+				console.log(`\x1b[32m${linkMatch[0]}\x1b[0m`);
+			}
+			
+			console.log('==============================\n');
+			return true;
 		}
-		
-		console.log('==============================\n');
-		
-		// In production, implement actual email sending here
-		// For now, always return true (simulated success)
+
+		await resend.emails.send({
+			from: env.EMAIL_FROM || 'Job Board <onboarding@resend.dev>',
+			to: [data.to],
+			subject: data.subject,
+			text: data.text,
+			html: data.html
+		});
+
 		return true;
 	} catch (error) {
 		console.error('Error in sendEmail function:', error);
-		// Even if logging fails, don't block the application
-		return true;
+		return false;
 	}
 }
 
@@ -53,15 +65,21 @@ ${magicLink}
 This link will expire in 24 hours for security reasons.
 
 Best regards,
-The Job Board Team
+FREN.WORK
 		`.trim(),
 		html: `
 <h2>Your job board is ready!</h2>
 <p>Hello!</p>
 <p>Your job board "<strong>${communityName}</strong>" has been created successfully.</p>
-<p><a href="${magicLink}" style="background-color: #007bff; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px;">Access Admin Panel</a></p>
-<p><small>This link will expire in 24 hours for security reasons.</small></p>
-<p>Best regards,<br>The Job Board Team</p>
+<p><a href="${magicLink}" style="background-color: #4ADE80; color: white; border-style: solid; font-family:Arial, sans-serif;  border-color: #4ADE80; padding: 10px 20px; text-decoration: none; border-radius: 5px;">Access Admin Panel</a></p>
+<p><small>This link doesn't expire. Use it to manage your board.</small></p>
+<p>From your frens at</p>
+<div style="margin-bottom: 20px;">
+  <span style="background-color: #4ADE80; color: white; padding: 10px 20px; font-family:Arial, sans-serif;  font-weight: 600;">FREN.WORK</span>
+</div>
+<div>
+  <a href="mailto:support@fren.work" style="color: #A9A9A9;">support@fren.work</a>
+</div>
 		`.trim()
 	};
 }
@@ -80,7 +98,7 @@ Your job posting "${jobTitle}" has been submitted successfully.
 Click the link below to edit or manage your job posting:
 ${magicLink}
 
-This link will expire in 24 hours for security reasons.
+This link doesn't expire. Do not lose it!.
 
 Best regards,
 The Job Board Team
@@ -89,9 +107,24 @@ The Job Board Team
 <h2>Job posted successfully!</h2>
 <p>Hello!</p>
 <p>Your job posting "<strong>${jobTitle}</strong>" has been submitted successfully.</p>
-<p><a href="${magicLink}" style="background-color: #28a745; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px;">Edit Job Posting</a></p>
-<p><small>This link will expire in 24 hours for security reasons.</small></p>
-<p>Best regards,<br>The Job Board Team</p>
+<p><a href="${magicLink}" style="background-color: #4ADE80; color: white; border-style: solid; font-family:Arial, sans-serif;  border-color: #4ADE80; padding: 10px 20px; text-decoration: none; border-radius: 5px;">Manage Job Post</a></p>
+<p><small>This link doesn't expire. Use it to manage your job post.</small></p>
+<p>From your frens at</p>
+<div style="margin-bottom: 20px;">
+  <a href="https://fren.work" 
+     style="background-color: #4ADE80; 
+            color: white; 
+            padding: 10px 20px; 
+            font-family: Arial, sans-serif; 
+            font-weight: 600; 
+            text-decoration: none; 
+            display: inline-block;">
+    FREN.WORK
+  </a>
+</div>
+<div>
+  <a href="mailto:support@fren.work" style="color: #A9A9A9;">support@fren.work</a>
+</div>
 		`.trim()
 	};
 }

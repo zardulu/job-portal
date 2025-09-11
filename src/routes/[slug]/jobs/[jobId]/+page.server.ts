@@ -38,10 +38,12 @@ export const load: PageServerLoad = async ({ params }) => {
                 description: job.description,
                 contact_info: job.contact_info,
                 created_at: job.created_at,
-                // Add default values for fields that don't exist in current schema
-                company: 'Not specified',
-                location: 'Remote',
-                category: 'Other'
+                company: job.company,
+                location: job.location,
+                category: job.category,
+                job_type: job.job_type,
+                salary_min: job.salary_min,
+                salary_max: job.salary_max
             }
         };
     } catch (err) {

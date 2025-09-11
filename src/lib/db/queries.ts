@@ -16,6 +16,12 @@ export interface Job {
     id: number;
     community_id: number;
     title: string;
+    company: string;
+    location: string;
+    category: string;
+    job_type: string;
+    salary_min: number | null;
+    salary_max: number | null;
     description: string;
     contact_info: string;
     poster_email: string;
@@ -33,6 +39,12 @@ export interface CreateCommunityData {
 export interface CreateJobData {
     community_id: number;
     title: string;
+    company: string;
+    location: string;
+    category: string;
+    job_type: string;
+    salary_min?: number | null;
+    salary_max?: number | null;
     description: string;
     contact_info: string;
     poster_email: string;
@@ -53,11 +65,11 @@ export async function createCommunity(data: CreateCommunityData): Promise<{ comm
     const tokenExpires = new Date();
     tokenExpires.setHours(tokenExpires.getHours() + 24); // 24 hour expiry
 
-    await db.execute({
-        sql: `INSERT INTO communities (slug, name, description, admin_email, admin_token, admin_token_expires) 
-			  VALUES (?, ?, ?, ?, ?, ?)`,
-        args: [slug, data.name, data.description || null, data.admin_email, adminToken, tokenExpires.toISOString()]
-    });
+    await db.execute(
+        `INSERT INTO communities (slug, name, description, admin_email, admin_token, admin_token_expires) 
+         VALUES (?, ?, ?, ?, ?, ?)`,
+        [slug, data.name, data.description || null, data.admin_email, adminToken, tokenExpires.toISOString()]
+    );
 
     const community = await getCommunityBySlug(slug);
     if (!community) {
@@ -68,10 +80,7 @@ export async function createCommunity(data: CreateCommunityData): Promise<{ comm
 }
 
 export async function getCommunityBySlug(slug: string): Promise<Community | null> {
-    const result = await db.execute({
-        sql: 'SELECT * FROM communities WHERE slug = ?',
-        args: [slug]
-    });
+    const result = await db.execute('SELECT * FROM communities WHERE slug = ?', [slug]);
 
     if (result.rows.length === 0) {
         return null;
@@ -91,10 +100,7 @@ export async function getCommunityBySlug(slug: string): Promise<Community | null
 }
 
 export async function getCommunityByAdminToken(token: string): Promise<Community | null> {
-    const result = await db.execute({
-        sql: 'SELECT * FROM communities WHERE admin_token = ? AND admin_token_expires > datetime("now")',
-        args: [token]
-    });
+    const result = await db.execute('SELECT * FROM communities WHERE admin_token = ? AND admin_token_expires > datetime("now")', [token]);
 
     if (result.rows.length === 0) {
         return null;
@@ -120,11 +126,11 @@ export async function createJob(data: CreateJobData): Promise<{ job: Job; editTo
     const tokenExpires = new Date();
     tokenExpires.setHours(tokenExpires.getHours() + 24); // 24 hour expiry
 
-    const result = await db.execute({
-        sql: `INSERT INTO jobs (community_id, title, description, contact_info, poster_email, edit_token, token_expires) 
-			  VALUES (?, ?, ?, ?, ?, ?, ?)`,
-        args: [data.community_id, data.title, data.description, data.contact_info, data.poster_email, editToken, tokenExpires.toISOString()]
-    });
+    const result = await db.execute(
+        `INSERT INTO jobs (community_id, title, company, location, category, job_type, salary_min, salary_max, description, contact_info, poster_email, edit_token, token_expires) 
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        [data.community_id, data.title, data.company, data.location, data.category, data.job_type, data.salary_min, data.salary_max, data.description, data.contact_info, data.poster_email, editToken, tokenExpires.toISOString()]
+    );
 
     const jobId = Number(result.lastInsertRowid);
     const job = await getJobById(jobId);
@@ -136,10 +142,7 @@ export async function createJob(data: CreateJobData): Promise<{ job: Job; editTo
 }
 
 export async function getJobById(id: number): Promise<Job | null> {
-    const result = await db.execute({
-        sql: 'SELECT * FROM jobs WHERE id = ?',
-        args: [id]
-    });
+    const result = await db.execute('SELECT * FROM jobs WHERE id = ?', [id]);
 
     if (result.rows.length === 0) {
         return null;
@@ -150,6 +153,12 @@ export async function getJobById(id: number): Promise<Job | null> {
         id: row.id as number,
         community_id: row.community_id as number,
         title: row.title as string,
+        company: row.company as string,
+        location: row.location as string,
+        category: row.category as string,
+        job_type: row.job_type as string,
+        salary_min: row.salary_min as number | null,
+        salary_max: row.salary_max as number | null,
         description: row.description as string,
         contact_info: row.contact_info as string,
         poster_email: row.poster_email as string,
@@ -160,15 +169,18 @@ export async function getJobById(id: number): Promise<Job | null> {
 }
 
 export async function getJobsByCommunityId(communityId: number): Promise<Job[]> {
-    const result = await db.execute({
-        sql: 'SELECT * FROM jobs WHERE community_id = ? ORDER BY created_at DESC',
-        args: [communityId]
-    });
+    const result = await db.execute('SELECT * FROM jobs WHERE community_id = ? ORDER BY created_at DESC', [communityId]);
 
     return result.rows.map(row => ({
         id: row.id as number,
         community_id: row.community_id as number,
         title: row.title as string,
+        company: row.company as string,
+        location: row.location as string,
+        category: row.category as string,
+        job_type: row.job_type as string,
+        salary_min: row.salary_min as number | null,
+        salary_max: row.salary_max as number | null,
         description: row.description as string,
         contact_info: row.contact_info as string,
         poster_email: row.poster_email as string,
@@ -179,10 +191,7 @@ export async function getJobsByCommunityId(communityId: number): Promise<Job[]> 
 }
 
 export async function getJobByEditToken(token: string): Promise<Job | null> {
-    const result = await db.execute({
-        sql: 'SELECT * FROM jobs WHERE edit_token = ? AND token_expires > datetime("now")',
-        args: [token]
-    });
+    const result = await db.execute('SELECT * FROM jobs WHERE edit_token = ? AND token_expires > datetime("now")', [token]);
 
     if (result.rows.length === 0) {
         return null;
@@ -193,6 +202,12 @@ export async function getJobByEditToken(token: string): Promise<Job | null> {
         id: row.id as number,
         community_id: row.community_id as number,
         title: row.title as string,
+        company: row.company as string,
+        location: row.location as string,
+        category: row.category as string,
+        job_type: row.job_type as string,
+        salary_min: row.salary_min as number | null,
+        salary_max: row.salary_max as number | null,
         description: row.description as string,
         contact_info: row.contact_info as string,
         poster_email: row.poster_email as string,
@@ -210,6 +225,30 @@ export async function updateJob(id: number, data: Partial<CreateJobData>): Promi
         updates.push('title = ?');
         args.push(data.title);
     }
+    if (data.company) {
+        updates.push('company = ?');
+        args.push(data.company);
+    }
+    if (data.location) {
+        updates.push('location = ?');
+        args.push(data.location);
+    }
+    if (data.category) {
+        updates.push('category = ?');
+        args.push(data.category);
+    }
+    if (data.job_type) {
+        updates.push('job_type = ?');
+        args.push(data.job_type);
+    }
+    if (data.salary_min !== undefined) {
+        updates.push('salary_min = ?');
+        args.push(data.salary_min);
+    }
+    if (data.salary_max !== undefined) {
+        updates.push('salary_max = ?');
+        args.push(data.salary_max);
+    }
     if (data.description) {
         updates.push('description = ?');
         args.push(data.description);
@@ -225,19 +264,13 @@ export async function updateJob(id: number, data: Partial<CreateJobData>): Promi
 
     args.push(id);
 
-    await db.execute({
-        sql: `UPDATE jobs SET ${updates.join(', ')} WHERE id = ?`,
-        args
-    });
+    await db.execute(`UPDATE jobs SET ${updates.join(', ')} WHERE id = ?`, args);
 
     return getJobById(id);
 }
 
 export async function deleteJob(id: number): Promise<boolean> {
-    const result = await db.execute({
-        sql: 'DELETE FROM jobs WHERE id = ?',
-        args: [id]
-    });
+    const result = await db.execute('DELETE FROM jobs WHERE id = ?', [id]);
 
     return result.rowsAffected > 0;
 }

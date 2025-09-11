@@ -14,6 +14,7 @@
                 company: string;
                 location: string;
                 category: string;
+                job_type?: string;
                 contact_info: string;
                 salary_min?: number;
                 salary_max?: number;
@@ -33,10 +34,10 @@
     }
 
     function formatSalary(min?: number, max?: number) {
-        if (!min && !max) return 'Salary not specified';
+        if (!min && !max) return 'SALARY NOT SPECIFIED';
         if (min && max) return `$${min.toLocaleString()} - $${max.toLocaleString()}`;
-        if (min) return `From $${min.toLocaleString()}`;
-        if (max) return `Up to $${max.toLocaleString()}`;
+        if (min) return `FROM $${min.toLocaleString()}`;
+        if (max) return `UP TO $${max.toLocaleString()}`;
     }
 </script>
 
@@ -45,21 +46,21 @@
     <meta name="description" content={data.job.description.substring(0, 150)} />
 </svelte:head>
 
-<div class="min-h-screen bg-gray-50">
-    <!-- Navbar -->
-    <nav class="bg-white shadow">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex items-center justify-between h-16">
+<div class="min-h-screen bg-bg font-brutal">
+    <!-- Brutalist Navbar -->
+    <nav class="bg-primary border-b-4 border-border shadow-brutal rounded-b-brutal">
+        <div class="max-w-5xl mx-auto px-4">
+            <div class="flex items-center justify-between py-4">
                 <div class="flex items-center">
-                    <a href="/" class="text-lg font-semibold text-gray-900">fren.work</a>
-                    <span class="mx-2 text-gray-400">/</span>
-                    <a href="/{data.community.slug}" class="text-lg font-semibold text-gray-900">{data.community.name}</a>
-                    <span class="mx-2 text-gray-400">/</span>
-                    <span class="text-lg text-gray-600">Job Details</span>
+                    <a href="/" class="text-brutal-lg text-text font-bold tracking-wider hover:animate-brutal-bounce">fren.work</a>
+                    <span class="mx-3 text-text font-semibold text-brutal-md">/</span>
+                    <a href="/{data.community.slug}" class="text-brutal-lg text-text font-bold tracking-wider hover:animate-brutal-bounce">{data.community.name}</a>
+                    <span class="mx-3 text-text font-semibold text-brutal-md">/</span>
+                    <span class="text-brutal-lg text-text font-bold">Job Details</span>
                 </div>
                 <a
                     href="/{data.community.slug}"
-                    class="bg-gray-500 text-white px-4 py-2 rounded-md hover:bg-gray-600 transition"
+                    class="bg-surface text-text px-4 py-2 border-3 border-border font-semibold tracking-wide shadow-brutal-sm hover:shadow-brutal-hover hover:translate-x-1 hover:translate-y-1 transition-all duration-150 rounded-brutal"
                 >
                     Back to Jobs
                 </a>
@@ -67,56 +68,59 @@
         </div>
     </nav>
 
-    <main class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <main class="max-w-4xl mx-auto px-4 py-6">
         <!-- Success message -->
         {#if $page?.url?.searchParams?.get('updated')}
-            <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-6">
-                ✅ Job updated successfully!
+            <div class="bg-green-400 text-text px-6 py-3 border-3 border-border shadow-brutal-soft font-semibold mb-6 rounded-brutal">
+                Job updated successfully!
             </div>
         {/if}
-        <div class="bg-white rounded-lg shadow-lg overflow-hidden">
+
+        <div class="bg-surface border-3 border-border shadow-brutal-card rounded-brutal-lg overflow-hidden">
             <!-- Job Header -->
-            <div class="bg-gradient-to-r from-blue-500 to-blue-600 px-8 py-6 text-white">
+            <div class="bg-green-400 border-b-3 border-border px-6 py-6">
                 <div class="flex items-start justify-between">
                     <div>
-                        <h1 class="text-3xl font-bold mb-2">{data.job.title}</h1>
-                        <div class="flex items-center gap-4 text-blue-100">
-                            <span class="flex items-center gap-1">
-                                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                                    <path fill-rule="evenodd" d="M4 4a2 2 0 012-2h8a2 2 0 012 2v12a1 1 0 110 2h-3a1 1 0 01-1-1v-6a1 1 0 00-1-1H9a1 1 0 00-1 1v6a1 1 0 01-1 1H4a1 1 0 110-2V4zm3 1h2v2H7V5zm2 4H7v2h2V9zm2-4h2v2h-2V5zm2 4h-2v2h2V9z" clip-rule="evenodd"></path>
-                                </svg>
-                                {data.job.company}
-                            </span>
-                            <span class="flex items-center gap-1">
-                                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                                    <path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd"></path>
-                                </svg>
-                                {data.job.location}
-                            </span>
-                            <span class="flex items-center gap-1">
-                                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                                    <path fill-rule="evenodd" d="M17.707 9.293a1 1 0 010 1.414l-7 7a1 1 0 01-1.414 0l-7-7A.997.997 0 012 10V5a3 3 0 013-3h5c.256 0 .512.098.707.293l7 7zM5 6a1 1 0 100-2 1 1 0 000 2z" clip-rule="evenodd"></path>
-                                </svg>
-                                {data.job.category}
-                            </span>
+                        <h1 class="text-brutal-xl font-bold text-text mb-3">{data.job.title}</h1>
+                        <div class="flex flex-wrap items-center gap-3">
+                            {#if data.job.job_type}
+                                <span class="bg-brutal-cyan text-white px-3 py-1 font-semibold text-brutal-sm rounded-brutal">
+                                    {data.job.job_type === 'Full-time' ? '💼' : data.job.job_type === 'Part-time' ? '⏰' : '📋'} {data.job.job_type}
+                                </span>
+                            {/if}
+                            {#if data.job.company}
+                                <span class="bg-brutal-blue text-white px-3 py-1 font-semibold text-brutal-sm rounded-brutal">
+                                    🏢 {data.job.company}
+                                </span>
+                            {/if}
+                            {#if data.job.location}
+                                <span class="bg-brutal-purple text-white px-3 py-1 font-semibold text-brutal-sm rounded-brutal">
+                                    📍 {data.job.location}
+                                </span>
+                            {/if}
+                            {#if data.job.category}
+                                <span class="bg-brutal-orange text-white px-3 py-1 font-semibold text-brutal-sm rounded-brutal">
+                                    🏷️ {data.job.category}
+                                </span>
+                            {/if}
                         </div>
                     </div>
-                    <div class="text-right">
-                        <div class="text-sm text-blue-100">Posted</div>
-                        <div class="text-lg font-semibold">{formatDate(data.job.created_at)}</div>
+                    <div class="text-right bg-surface text-text px-4 py-3 border-3 border-border shadow-brutal-soft rounded-brutal">
+                        <div class="text-brutal-sm font-semibold">Posted</div>
+                        <div class="text-brutal-md font-semibold">{formatDate(data.job.created_at)}</div>
                     </div>
                 </div>
             </div>
 
             <!-- Job Content -->
-            <div class="px-8 py-6">
-                <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <div class="px-6 py-6">
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
                     <!-- Main Content -->
                     <div class="lg:col-span-2">
-                        <div class="mb-8">
-                            <h2 class="text-xl font-semibold text-gray-900 mb-4">Job Description</h2>
-                            <div class="prose prose-gray max-w-none">
-                                <div class="whitespace-pre-wrap text-gray-700 leading-relaxed">
+                        <div class="bg-bg border-3 border-border shadow-brutal-soft p-4 rounded-brutal">
+                            <h2 class="text-brutal-lg font-semibold text-text mb-4 text-center bg-surface px-3 py-2 inline-block shadow-brutal-soft rounded-brutal">Job Description</h2>
+                            <div class="mt-4">
+                                <div class="whitespace-pre-wrap text-text font-medium text-base leading-relaxed">
                                     {data.job.description}
                                 </div>
                             </div>
@@ -124,49 +128,72 @@
                     </div>
 
                     <!-- Sidebar -->
-                    <div class="lg:col-span-1">
-                        <div class="bg-gray-50 rounded-lg p-6 mb-6">
-                            <h3 class="text-lg font-semibold text-gray-900 mb-4">Job Details</h3>
+                    <div class="lg:col-span-1 space-y-4">
+                        <!-- Job Details -->
+                        <div class="bg-surface border-3 border-border shadow-brutal-soft p-4 rounded-brutal">
+                            <h3 class="text-brutal-md font-semibold text-text mb-4 text-center">Job Details</h3>
                             <dl class="space-y-3">
-                                <div>
-                                    <dt class="text-sm font-medium text-gray-500">Company</dt>
-                                    <dd class="text-sm text-gray-900">{data.job.company}</dd>
-                                </div>
-                                <div>
-                                    <dt class="text-sm font-medium text-gray-500">Location</dt>
-                                    <dd class="text-sm text-gray-900">{data.job.location}</dd>
-                                </div>
-                                <div>
-                                    <dt class="text-sm font-medium text-gray-500">Category</dt>
-                                    <dd class="text-sm text-gray-900">{data.job.category}</dd>
-                                </div>
+                                {#if data.job.job_type}
+                                    <div>
+                                        <dt class="text-brutal-sm font-semibold text-text mb-1">💼 Job Type</dt>
+                                        <dd class="text-text font-medium text-base">{data.job.job_type}</dd>
+                                    </div>
+                                {/if}
+                                {#if data.job.company}
+                                    <div>
+                                        <dt class="text-brutal-sm font-semibold text-text mb-1">🏢 Company</dt>
+                                        <dd class="text-text font-medium text-base">{data.job.company}</dd>
+                                    </div>
+                                {/if}
+                                {#if data.job.location}
+                                    <div>
+                                        <dt class="text-brutal-sm font-semibold text-text mb-1">📍 Location</dt>
+                                        <dd class="text-text font-medium text-base">{data.job.location}</dd>
+                                    </div>
+                                {/if}
+                                {#if data.job.category}
+                                    <div>
+                                        <dt class="text-brutal-sm font-semibold text-text mb-1">🏷️ Category</dt>
+                                        <dd class="text-text font-medium text-base">{data.job.category}</dd>
+                                    </div>
+                                {/if}
                                 {#if data.job.salary_min || data.job.salary_max}
                                     <div>
-                                        <dt class="text-sm font-medium text-gray-500">Salary</dt>
-                                        <dd class="text-sm text-gray-900">{formatSalary(data.job.salary_min, data.job.salary_max)}</dd>
+                                        <dt class="text-brutal-sm font-semibold text-text mb-1">💰 Salary</dt>
+                                        <dd class="text-text font-medium text-base">{formatSalary(data.job.salary_min, data.job.salary_max)}</dd>
                                     </div>
                                 {/if}
                                 <div>
-                                    <dt class="text-sm font-medium text-gray-500">Posted</dt>
-                                    <dd class="text-sm text-gray-900">{formatDate(data.job.created_at)}</dd>
+                                    <dt class="text-brutal-sm font-semibold text-text mb-1">📅 Posted</dt>
+                                    <dd class="text-text font-medium text-base">{formatDate(data.job.created_at)}</dd>
                                 </div>
                             </dl>
                         </div>
 
                         <!-- Apply Section -->
-                        <div class="bg-blue-50 border border-blue-200 rounded-lg p-6">
-                            <h3 class="text-lg font-semibold text-gray-900 mb-3">Apply for this Job</h3>
-                            <p class="text-sm text-gray-600 mb-4">
-                                Interested in this position? Reach out directly to the hiring team.
+                        <div class="bg-green-400 border-3 border-border shadow-brutal-soft p-4 rounded-brutal">
+                            <h3 class="text-brutal-md font-semibold text-text mb-3 text-center">Apply for This Job</h3>
+                            <p class="text-text font-medium text-brutal-sm mb-4 text-center">
+                                Interested? Reach out directly to the hiring team.
                             </p>
                             <a
                                 href="mailto:{data.job.contact_info}?subject=Application for {data.job.title}"
-                                class="w-full bg-blue-500 text-white text-center py-2 px-4 rounded-md hover:bg-blue-600 transition block"
+                                class="w-full bg-surface text-text text-center py-3 px-4 border-3 border-border font-semibold tracking-wide shadow-brutal-sm hover:shadow-brutal-hover hover:translate-x-1 hover:translate-y-1 transition-all duration-150 block rounded-brutal"
                             >
                                 Apply Now
                             </a>
-                            <p class="text-xs text-gray-500 mt-2 text-center">
-                                {data.job.contact_info}
+                            <div class="bg-surface border-2 border-border p-2 mt-3 shadow-brutal-soft rounded">
+                                <p class="text-text font-medium text-xs text-center">
+                                    {data.job.contact_info}
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- Motivation Box -->
+                        <div class="bg-surface border-3 border-border shadow-brutal-soft p-4 rounded-brutal">
+                            <h4 class="text-brutal-md font-semibold text-text mb-3 text-center">Don't Wait!</h4>
+                            <p class="text-text font-medium text-brutal-sm text-center">
+                                The best opportunities go fast. Apply today!
                             </p>
                         </div>
                     </div>

@@ -1,4 +1,5 @@
 <script lang="ts">
+    import '../../../app.css';
     import { enhance } from '$app/forms';
     
     interface Props {
@@ -12,9 +13,9 @@
             jobs: Array<{
                 id: number;
                 title: string;
-                company: string;
-                location: string;
-                category: string;
+                description: string;
+                contact_info: string;
+                poster_email: string;
                 created_at: string;
             }>;
         };
@@ -23,11 +24,15 @@
     let { data }: Props = $props();
     
     function formatDate(dateString: string) {
-        return new Date(dateString).toLocaleDateString();
+        return new Date(dateString).toLocaleDateString('en-US', {
+            year: 'numeric',
+            month: 'short',
+            day: 'numeric'
+        }).toUpperCase();
     }
 
     function confirmBoardDeletion() {
-        if (typeof globalThis !== 'undefined' && globalThis.confirm && globalThis.confirm(`Are you sure you want to delete the entire "${data.community.name}" job board? This action cannot be undone and will delete all jobs.`)) {
+        if (typeof globalThis !== 'undefined' && globalThis.confirm && globalThis.confirm(`ARE YOU SURE YOU WANT TO DELETE "${data.community.name.toUpperCase()}"? THIS CANNOT BE UNDONE!`)) {
             if (typeof globalThis.document !== 'undefined') {
                 const form = globalThis.document.getElementById('delete-board-form');
                 if (form && 'submit' in form) {
@@ -39,48 +44,50 @@
 </script>
 
 <svelte:head>
-    <title>Admin - {data.community.name}</title>
+    <title>ADMIN - {data.community.name.toUpperCase()}</title>
 </svelte:head>
 
-<div class="min-h-screen bg-gray-50">
-    <!-- Navbar -->
-    <nav class="bg-white shadow">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex items-center justify-between h-16">
-                <div class="flex items-center">
-                    <a href="/" class="text-lg font-semibold text-gray-900">fren.work</a>
-                    <span class="mx-2 text-gray-400">/</span>
-                    <a href="/{data.community.slug}" class="text-lg font-semibold text-gray-900">{data.community.name}</a>
-                    <span class="mx-2 text-gray-400">/</span>
-                    <span class="text-lg text-gray-600">Admin</span>
-                </div>
-                <div class="flex gap-2">
-                    <a
-                        href="/{data.community.slug}"
-                        class="bg-gray-500 text-white px-4 py-2 rounded-md hover:bg-gray-600 transition"
-                    >
-                        View Board
-                    </a>
-                </div>
+<div class="min-h-screen bg-bg font-brutal">
+    <!-- Brutalist Navbar -->
+    <nav class="bg-primary border-b-4 border-border shadow-brutal">
+        <div class="flex items-center justify-between p-6">
+            <div class="flex items-center gap-4">
+                <a href="/" class="text-brutal-xl text-text font-black uppercase tracking-wider hover:bg-secondary hover:px-2 transition-all">FREN.WORK</a>
+                <span class="text-brutal-lg font-black">/</span>
+                <a href="/{data.community.slug}" class="text-brutal-lg text-text font-black uppercase hover:bg-accent hover:px-2 transition-all">{data.community.name}</a>
+                <span class="text-brutal-lg font-black">/</span>
+                <span class="text-brutal-lg text-text font-black uppercase bg-warning px-2 py-1">ADMIN</span>
+            </div>
+            <div class="flex gap-4">
+                <a
+                    href="/{data.community.slug}"
+                    class="bg-secondary text-text px-6 py-3 border-3 border-border font-black uppercase tracking-wide shadow-brutal-sm hover:shadow-brutal-hover hover:translate-x-1 hover:translate-y-1 transition-all duration-100"
+                >
+                    VIEW BOARD
+                </a>
             </div>
         </div>
     </nav>
 
-    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div class="mb-8">
-            <h1 class="text-3xl font-bold text-gray-900">Admin Dashboard</h1>
-            <p class="text-gray-600 mt-2">Manage your job board and postings</p>
+    <main class="max-w-7xl mx-auto p-8">
+        <!-- Header -->
+        <div class="mb-12">
+            <h1 class="text-6xl font-black text-text mb-4 uppercase tracking-tighter">ADMIN DASHBOARD</h1>
+            <p class="text-brutal-lg text-text font-bold uppercase tracking-wide">MANAGE YOUR BRUTAL JOB BOARD</p>
         </div>
 
         <!-- Board Statistics -->
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-            <div class="bg-white rounded-lg shadow p-6">
-                <h3 class="text-lg font-semibold text-gray-900 mb-2">Total Jobs</h3>
-                <p class="text-3xl font-bold text-blue-600">{data.jobs.length}</p>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
+            <div class="bg-brutal-cyan border-4 border-border shadow-brutal p-8 transform rotate-1">
+                <div class="text-6xl mb-4 text-center">📊</div>
+                <h3 class="font-black text-brutal-md mb-4 uppercase text-center">TOTAL JOBS</h3>
+                <p class="text-6xl font-black text-text text-center">{data.jobs.length}</p>
             </div>
-            <div class="bg-white rounded-lg shadow p-6">
-                <h3 class="text-lg font-semibold text-gray-900 mb-2">This Month</h3>
-                <p class="text-3xl font-bold text-green-600">
+            
+            <div class="bg-brutal-lime border-4 border-border shadow-brutal p-8 transform -rotate-1">
+                <div class="text-6xl mb-4 text-center">📅</div>
+                <h3 class="font-black text-brutal-md mb-4 uppercase text-center">THIS MONTH</h3>
+                <p class="text-6xl font-black text-text text-center">
                     {data.jobs.filter(job => {
                         const jobDate = new Date(job.created_at);
                         const now = new Date();
@@ -88,125 +95,107 @@
                     }).length}
                 </p>
             </div>
-            <div class="bg-white rounded-lg shadow p-6">
-                <h3 class="text-lg font-semibold text-gray-900 mb-2">Board Created</h3>
-                <p class="text-lg text-gray-600">{formatDate(data.community.created_at)}</p>
+            
+            <div class="bg-brutal-pink border-4 border-border shadow-brutal p-8 transform rotate-1">
+                <div class="text-6xl mb-4 text-center">🚀</div>
+                <h3 class="font-black text-brutal-md mb-4 uppercase text-center">CREATED</h3>
+                <p class="text-brutal-sm font-black text-text text-center">{formatDate(data.community.created_at)}</p>
             </div>
         </div>
 
         <!-- Jobs Management -->
-        <div class="bg-white rounded-lg shadow mb-8">
-            <div class="px-6 py-4 border-b border-gray-200">
-                <h2 class="text-xl font-semibold text-gray-900">Manage Jobs</h2>
+        <div class="bg-surface border-4 border-border shadow-brutal-lg mb-12">
+            <div class="bg-warning border-b-4 border-border p-6">
+                <h2 class="text-brutal-xl font-black text-text uppercase">MANAGE JOBS</h2>
             </div>
             
             {#if data.jobs.length === 0}
-                <div class="text-center py-12">
-                    <p class="text-gray-500">No jobs posted yet.</p>
+                <div class="text-center py-16">
+                    <div class="text-8xl mb-8">😴</div>
+                    <p class="text-brutal-lg font-black text-text uppercase mb-8">NO JOBS YET. TIME TO GET BRUTAL!</p>
                     <a
                         href="/{data.community.slug}/post-job"
-                        class="mt-4 inline-block bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 transition"
+                        class="bg-success text-text px-8 py-4 border-3 border-border font-black uppercase tracking-wide shadow-brutal-sm hover:shadow-brutal-hover hover:translate-x-2 hover:translate-y-2 transition-all duration-100"
                     >
-                        Post First Job
+                        POST FIRST JOB
                     </a>
                 </div>
             {:else}
-                <div class="overflow-x-auto">
-                    <table class="w-full">
-                        <thead class="bg-gray-50">
-                            <tr>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                    Job Details
-                                </th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                    Company
-                                </th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                    Posted
-                                </th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                    Actions
-                                </th>
-                            </tr>
-                        </thead>
-                        <tbody class="bg-white divide-y divide-gray-200">
-                            {#each data.jobs as job}
-                                <tr>
-                                    <td class="px-6 py-4">
-                                        <div>
-                                            <h3 class="text-sm font-medium text-gray-900">{job.title}</h3>
-                                            <p class="text-sm text-gray-500">{job.location} • {job.category}</p>
-                                        </div>
-                                    </td>
-                                    <td class="px-6 py-4 text-sm text-gray-900">{job.company || 'Not specified'}</td>
-                                    <td class="px-6 py-4 text-sm text-gray-500">{formatDate(job.created_at)}</td>
-                                    <td class="px-6 py-4 text-sm">
-                                        <div class="flex gap-2">
-                                            <a
-                                                href="/{data.community.slug}/jobs/{job.id}"
-                                                class="text-blue-600 hover:text-blue-900"
+                <div class="p-6">
+                    <div class="space-y-6">
+                        {#each data.jobs as job}
+                            <div class="bg-bg border-3 border-border shadow-brutal-sm p-6 transform hover:rotate-1 transition-all">
+                                <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                                    <div class="flex-1">
+                                        <h3 class="text-brutal-lg font-black text-text uppercase mb-2">{job.title}</h3>
+                                        <p class="text-brutal-sm font-bold text-text uppercase mb-2">📧 {job.poster_email}</p>
+                                        <p class="text-brutal-sm font-bold text-text uppercase">📅 {formatDate(job.created_at)}</p>
+                                    </div>
+                                    <div class="flex gap-4">
+                                        <a
+                                            href="/{data.community.slug}/jobs/{job.id}"
+                                            class="bg-brutal-blue text-bg px-4 py-2 border-3 border-border font-black uppercase shadow-brutal-sm hover:shadow-none hover:translate-x-1 hover:translate-y-1 transition-all duration-100"
+                                        >
+                                            VIEW
+                                        </a>
+                                        <form method="POST" action="?/deleteJob" use:enhance={() => {
+                                            return async ({ result, update }) => {
+                                                if (result.type === 'success') {
+                                                    await update();
+                                                }
+                                            };
+                                        }} class="inline">
+                                            <input type="hidden" name="jobId" value={job.id} />
+                                            <button
+                                                type="submit"
+                                                onclick={() => typeof globalThis !== 'undefined' && globalThis.confirm && globalThis.confirm('DELETE THIS JOB? NO GOING BACK!')}
+                                                class="bg-error text-bg px-4 py-2 border-3 border-border font-black uppercase shadow-brutal-sm hover:shadow-none hover:translate-x-1 hover:translate-y-1 transition-all duration-100"
                                             >
-                                                View
-                                            </a>
-                                            <form method="POST" action="?/deleteJob" use:enhance={() => {
-                                                return async ({ result, update }) => {
-                                                    if (result.type === 'success') {
-                                                        await update();
-                                                    }
-                                                };
-                                            }} class="inline">
-                                                <input type="hidden" name="jobId" value={job.id} />
-                                                <button
-                                                    type="submit"
-                                                    onclick={() => typeof globalThis !== 'undefined' && globalThis.confirm && globalThis.confirm('Are you sure you want to delete this job?')}
-                                                    class="text-red-600 hover:text-red-900"
-                                                >
-                                                    Delete
-                                                </button>
-                                            </form>
-                                        </div>
-                                    </td>
-                                </tr>
-                            {/each}
-                        </tbody>
-                    </table>
+                                                DELETE
+                                            </button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        {/each}
+                    </div>
                 </div>
             {/if}
         </div>
 
         <!-- Board Management -->
-        <div class="bg-white rounded-lg shadow">
-            <div class="px-6 py-4 border-b border-gray-200">
-                <h2 class="text-xl font-semibold text-gray-900">Board Settings</h2>
+        <div class="bg-surface border-4 border-border shadow-brutal-lg">
+            <div class="bg-secondary border-b-4 border-border p-6">
+                <h2 class="text-brutal-xl font-black text-text uppercase">BOARD SETTINGS</h2>
             </div>
             <div class="p-6">
-                <div class="mb-6">
-                    <h3 class="text-lg font-medium text-gray-900 mb-2">Board Information</h3>
-                    <dl class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div>
-                            <dt class="text-sm font-medium text-gray-500">Name</dt>
-                            <dd class="text-sm text-gray-900">{data.community.name}</dd>
+                <div class="mb-8">
+                    <h3 class="text-brutal-lg font-black text-text uppercase mb-6">BOARD INFO</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="bg-bg border-3 border-border shadow-brutal-sm p-4">
+                            <dt class="text-brutal-sm font-black text-text uppercase mb-2">NAME</dt>
+                            <dd class="text-brutal-md font-bold text-text">{data.community.name}</dd>
                         </div>
-                        <div>
-                            <dt class="text-sm font-medium text-gray-500">URL</dt>
-                            <dd class="text-sm text-gray-900">/{data.community.slug}</dd>
+                        <div class="bg-bg border-3 border-border shadow-brutal-sm p-4">
+                            <dt class="text-brutal-sm font-black text-text uppercase mb-2">URL</dt>
+                            <dd class="text-brutal-md font-bold text-text">/{data.community.slug}</dd>
                         </div>
-                        <div>
-                            <dt class="text-sm font-medium text-gray-500">Admin Email</dt>
-                            <dd class="text-sm text-gray-900">{data.community.admin_email}</dd>
+                        <div class="bg-bg border-3 border-border shadow-brutal-sm p-4">
+                            <dt class="text-brutal-sm font-black text-text uppercase mb-2">ADMIN EMAIL</dt>
+                            <dd class="text-brutal-md font-bold text-text">{data.community.admin_email}</dd>
                         </div>
-                        <div>
-                            <dt class="text-sm font-medium text-gray-500">Created</dt>
-                            <dd class="text-sm text-gray-900">{formatDate(data.community.created_at)}</dd>
+                        <div class="bg-bg border-3 border-border shadow-brutal-sm p-4">
+                            <dt class="text-brutal-sm font-black text-text uppercase mb-2">CREATED</dt>
+                            <dd class="text-brutal-md font-bold text-text">{formatDate(data.community.created_at)}</dd>
                         </div>
-                    </dl>
+                    </div>
                 </div>
 
-                <div class="border-t border-gray-200 pt-6">
-                    <h3 class="text-lg font-medium text-red-900 mb-4">Danger Zone</h3>
-                    <div class="bg-red-50 border border-red-200 rounded-md p-4">
-                        <p class="text-sm text-red-700 mb-4">
-                            Deleting your job board will permanently remove all jobs and cannot be undone.
+                <div class="border-t-4 border-border pt-8">
+                    <h3 class="text-brutal-lg font-black text-error uppercase mb-6">⚠️ DANGER ZONE ⚠️</h3>
+                    <div class="bg-error border-4 border-border shadow-brutal p-6 transform -rotate-1">
+                        <p class="text-brutal-md font-black text-bg uppercase mb-6">
+                            DELETING YOUR BOARD WILL NUKE EVERYTHING. NO TAKEBACKS!
                         </p>
                         <form id="delete-board-form" method="POST" action="?/deleteBoard" class="hidden">
                             <!-- Hidden form for board deletion -->
@@ -214,9 +203,9 @@
                         <button
                             type="button"
                             onclick={confirmBoardDeletion}
-                            class="bg-red-600 text-white px-4 py-2 rounded-md hover:bg-red-700 transition"
+                            class="bg-bg text-error px-8 py-4 border-3 border-border font-black uppercase tracking-wide shadow-brutal-sm hover:shadow-none hover:translate-x-2 hover:translate-y-2 transition-all duration-100"
                         >
-                            Delete Job Board
+                            🗑️ DELETE BOARD
                         </button>
                     </div>
                 </div>

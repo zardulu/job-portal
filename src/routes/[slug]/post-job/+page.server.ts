@@ -39,13 +39,19 @@ export const actions: Actions = {
 
         const jobData = {
             title: data.get('title') as string,
+            company: data.get('company') as string,
+            location: data.get('location') as string,
+            category: data.get('category') as string,
+            job_type: data.get('job_type') as string,
+            salary_min: data.get('salary_min') as string,
+            salary_max: data.get('salary_max') as string,
             description: data.get('description') as string,
             contact_info: data.get('contact_info') as string,
             poster_email: data.get('poster_email') as string,
         };
 
         // Validate required fields
-        const requiredFields = ['title', 'description', 'contact_info', 'poster_email'];
+        const requiredFields = ['title', 'company', 'category', 'description', 'contact_info', 'poster_email'];
         for (const field of requiredFields) {
             if (!jobData[field as keyof typeof jobData]?.trim()) {
                 return fail(400, {
@@ -75,6 +81,12 @@ export const actions: Actions = {
             const { job, editToken } = await createJob({
                 community_id: community.id,
                 title: jobData.title.trim(),
+                company: jobData.company.trim(),
+                location: jobData.location.trim(),
+                category: jobData.category.trim(),
+                job_type: jobData.job_type.trim(),
+                salary_min: jobData.salary_min ? parseInt(jobData.salary_min) : null,
+                salary_max: jobData.salary_max ? parseInt(jobData.salary_max) : null,
                 description: jobData.description.trim(),
                 contact_info: jobData.contact_info.trim(),
                 poster_email: jobData.poster_email.trim()
