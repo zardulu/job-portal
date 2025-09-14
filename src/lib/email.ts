@@ -1,6 +1,5 @@
 // Simple email service for sending magic links
 // In production, you'd want to use a service like SendGrid, Mailgun, or similar
-import { Resend } from 'resend';
 import { env } from '$env/dynamic/private';
 
 export interface EmailData {
@@ -10,27 +9,34 @@ export interface EmailData {
 	html?: string;
 }
 
-const resend = env.RESEND_API_KEY ? new Resend(env.RESEND_API_KEY) : null;
+// Initialize Resend only when needed to avoid bundling issues
+let resend: any = null;
 
 export async function sendEmail(data: EmailData): Promise<boolean> {
 	try {
 		// If no API key is configured, log to console (dev fallback)
-		if (!resend) {
+		if (!env.RESEND_API_KEY) {
 			console.log('\n📧 ===== MAGIC LINK EMAIL =====');
 			console.log(`To: ${data.to}`);
 			console.log(`Subject: ${data.subject}`);
 			console.log('\n📝 Email Content:');
 			console.log(data.text);
 			console.log('\n🔗 Magic Link (copy this):');
-			
+
 			// Extract the magic link from the email text
 			const linkMatch = data.text.match(/https?:\/\/[^\s]+/);
 			if (linkMatch) {
 				console.log(`\x1b[32m${linkMatch[0]}\x1b[0m`);
 			}
-			
+
 			console.log('==============================\n');
 			return true;
+		}
+
+		// Dynamically import Resend only when needed
+		if (!resend) {
+			const { Resend } = await import('resend');
+			resend = new Resend(env.RESEND_API_KEY);
 		}
 
 		await resend.emails.send({
@@ -50,7 +56,7 @@ export async function sendEmail(data: EmailData): Promise<boolean> {
 
 export function createAdminMagicLinkEmail(communityName: string, adminToken: string, baseUrl: string): EmailData {
 	const magicLink = `${baseUrl}/admin?token=${adminToken}`;
-	
+
 	return {
 		to: '', // Will be set by caller
 		subject: `Admin access for ${communityName} job board`,
@@ -86,7 +92,7 @@ FREN.WORK
 
 export function createJobEditMagicLinkEmail(jobTitle: string, editToken: string, baseUrl: string): EmailData {
 	const magicLink = `${baseUrl}/edit-job?token=${editToken}`;
-	
+
 	return {
 		to: '', // Will be set by caller
 		subject: `Edit your job posting: ${jobTitle}`,
