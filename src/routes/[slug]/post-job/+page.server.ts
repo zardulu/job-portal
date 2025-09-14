@@ -43,6 +43,7 @@ export const actions: Actions = {
             location: data.get('location') as string,
             category: data.get('category') as string,
             job_type: data.get('job_type') as string,
+            remote: data.get('remote') as string,
             salary_min: data.get('salary_min') as string,
             salary_max: data.get('salary_max') as string,
             description: data.get('description') as string,
@@ -50,8 +51,8 @@ export const actions: Actions = {
             poster_email: data.get('poster_email') as string,
         };
 
-        // Validate required fields
-        const requiredFields = ['title', 'company', 'category', 'description', 'contact_info', 'poster_email'];
+        // Validate required fields (category and contact_info are now optional)
+        const requiredFields = ['title', 'company', 'description', 'poster_email'];
         for (const field of requiredFields) {
             if (!jobData[field as keyof typeof jobData]?.trim()) {
                 return fail(400, {
@@ -70,6 +71,14 @@ export const actions: Actions = {
             });
         }
 
+        // Validate contact_info email if provided
+        if (jobData.contact_info && jobData.contact_info.trim() && !emailRegex.test(jobData.contact_info)) {
+            return fail(400, {
+                error: 'Please enter a valid contact email address',
+                ...jobData
+            });
+        }
+
         try {
             // Get community
             const community = await getCommunityBySlug(slug);
@@ -83,12 +92,13 @@ export const actions: Actions = {
                 title: jobData.title.trim(),
                 company: jobData.company.trim(),
                 location: jobData.location.trim(),
-                category: jobData.category.trim(),
+                category: jobData.category?.trim() || null,
                 job_type: jobData.job_type.trim(),
+                remote: jobData.remote === '1' ? 1 : 0,
                 salary_min: jobData.salary_min ? parseInt(jobData.salary_min) : null,
                 salary_max: jobData.salary_max ? parseInt(jobData.salary_max) : null,
                 description: jobData.description.trim(),
-                contact_info: jobData.contact_info.trim(),
+                contact_info: jobData.contact_info?.trim() || null,
                 poster_email: jobData.poster_email.trim()
             });
 

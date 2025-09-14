@@ -10,9 +10,13 @@
                 name: string;
             };
         };
+        form?: {
+            error?: string;
+            [key: string]: any;
+        };
     }
     
-    let { data }: Props = $props();
+    let { data, form }: Props = $props();
     let loading = $state(false);
     let isRemote = $state(false);
     let jobType = $state<'Full-time' | 'Part-time' | 'Contract'>('Full-time');
@@ -29,9 +33,9 @@
         <div class="max-w-6xl mx-auto px-4">
             <div class="flex items-center justify-between py-4">
                 <div class="flex items-center">
-                    <a href="/" class="text-brutal-lg text-text font-bold tracking-wider hover:animate-brutal-bounce">fren.work</a>
+                     <a href="/" class="text-brutal-xl text-text font-black uppercase tracking-wider hover:bg-secondary hover:px-2  hover:text-green-400 transition-all ">FREN.WORK</a>
                     <span class="mx-3 text-text font-semibold text-brutal-md">/</span>
-                    <a href="/{data.community.slug}" class="text-brutal-lg text-text font-bold tracking-wider hover:animate-brutal-bounce">{data.community.name}</a>
+                    <a href="/{data.community.slug}" class="text-brutal-lg text-text font-bold tracking-wider hover:animate-brutal-bounce hover:bg-accent hover:px-2 transition-all">{data.community.name}</a>
                     <span class="mx-3 text-text font-semibold text-brutal-md">/</span>
                     <span class="text-brutal-lg text-text font-bold">Post Job</span>
                 </div>
@@ -46,6 +50,13 @@
                 Post a New<br>
                 <span class="bg-green-400 text-text px-3 py-1 inline-block shadow-brutal-soft rounded-brutal">Job</span>
             </h1>
+
+            <!-- Error Display -->
+            {#if form?.error}
+                <div class="bg-red-400 text-text px-6 py-3 border-3 border-border shadow-brutal-soft font-semibold mb-6 rounded-brutal">
+                    {form.error}
+                </div>
+            {/if}
             
             <form method="POST" use:enhance={() => {
                 loading = true;
@@ -69,6 +80,7 @@
                         id="title"
                         name="title"
                         required
+                        value={form?.title || ''}
                         class="w-full px-4 py-3 border-3 border-border bg-bg text-text font-medium text-base placeholder-text/50 shadow-brutal-sm focus:shadow-brutal focus:translate-x-1 focus:translate-y-1 transition-all duration-100 rounded-brutal"
                         placeholder="Senior Frontend Developer"
                     />
@@ -84,6 +96,7 @@
                         id="company"
                         name="company"
                         required
+                        value={form?.company || ''}
                         class="w-full px-4 py-3 border-3 border-border bg-bg text-text font-medium text-base placeholder-text/50 shadow-brutal-sm focus:shadow-brutal focus:translate-x-1 focus:translate-y-1 transition-all duration-100 rounded-brutal"
                         placeholder="Tech Corp"
                     />
@@ -118,12 +131,11 @@
                 <!-- Category -->
                 <div>
                     <label for="category" class="block text-brutal-md font-semibold text-text mb-3 tracking-wide">
-                        Category *
+                        Category
                     </label>
                     <select
                         id="category"
                         name="category"
-                        required
                         class="w-full px-4 py-3 border-3 border-border bg-bg text-text font-medium text-base shadow-brutal-sm focus:shadow-brutal focus:translate-x-1 focus:translate-y-1 transition-all duration-100 rounded-brutal"
                     >
                         <option value="">Select Category</option>
@@ -131,6 +143,13 @@
                         <option value="Design">Design</option>
                         <option value="Marketing">Marketing</option>
                         <option value="Sales">Sales</option>
+                        <option value="Product">Product</option>
+                        <option value="Data">Data</option>
+                        <option value="Operations">Operations</option>
+                        <option value="Finance">Finance</option>
+                        <option value="HR">HR</option>
+                        <option value="Customer Success">Customer Success</option>
+                        <option value="Legal">Legal</option>
                         <option value="Other">Other</option>
                     </select>
                 </div>
@@ -200,19 +219,18 @@
                 <!-- Contact Information -->
                 <div>
                     <label for="contact_info" class="block text-brutal-md font-semibold text-text mb-3 tracking-wide">
-                        Contact Information *
+                        Contact Information (optional)
                     </label>
                     <input
                         type="email"
                         id="contact_info"
                         name="contact_info"
-                        required
                         class="w-full px-4 py-3 border-3 border-border bg-bg text-text font-medium text-base placeholder-text/50 shadow-brutal-sm focus:shadow-brutal focus:translate-x-1 focus:translate-y-1 transition-all duration-100 rounded-brutal"
                         placeholder="hr@company.com"
                     />
                     <div class="bg-surface border-3 border-border p-3 mt-3 shadow-brutal-soft rounded-brutal">
                         <p class="text-text font-medium text-brutal-sm text-center">
-                            This email will be displayed to applicants
+                            If provided, this email will be displayed to applicants for direct contact
                         </p>
                     </div>
                 </div>

@@ -19,7 +19,7 @@
 
 <div class="min-h-screen bg-bg flex flex-col font-brutal">
 	<!-- Brutalist Navbar -->
-	<nav class="bg-primary border-b-4 border-border shadow-brutal">
+	<nav class="bg-primary">
 		<!-- <div class="flex items-center justify-between p-6">
 			<h1 class="text-brutal-xl text-text font-black uppercase tracking-wider">FREN.WORK</h1>
 			<button class="bg-secondary text-text px-6 py-3 border-3 border-border font-black uppercase tracking-wide shadow-brutal-sm hover:shadow-brutal-hover hover:translate-x-1 hover:translate-y-1 transition-all duration-100">
@@ -106,4 +106,27 @@
 			</div>
 		</div> -->
 	</main>
+
+	<!-- Footer -->
+	<footer class="bg-primary">
+		<div class="flex items-center justify-between p-6">
+			<div class="flex gap-6">
+				<a 
+					href="/contact" 
+					class="text-text font-bold uppercase tracking-wide hover:text-green-400 transition-colors text-sm"
+				>
+					CONTACT
+				</a>
+				<a 
+					href="/privacy" 
+					class="text-text font-bold uppercase tracking-wide hover:text-green-400 transition-colors text-sm"
+				>
+					PRIVACY
+				</a>
+			</div>
+			<div class="text-text font-bold uppercase tracking-wide text-sm">
+				© 2025 FREN.WORK
+			</div>
+		</div>
+	</footer>
 </div>

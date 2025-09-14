@@ -12,7 +12,9 @@
     <!-- Brutalist Navbar -->
     <nav class="bg-primary border-b-4 border-border shadow-brutal rounded-b-brutal">
         <div class="flex items-center justify-between p-4">
-            <a href="/" class="text-brutal-xl text-text font-bold tracking-wider hover:animate-brutal-bounce">FREN.WORK</a>
+           <a href="/" class="text-brutal-xl text-text font-black uppercase tracking-wider hover:text-green-400 transition-colors">
+				FREN.WORK
+			</a>
         </div>
     </nav>
 

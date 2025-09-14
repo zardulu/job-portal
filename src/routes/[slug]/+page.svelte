@@ -14,6 +14,7 @@
 				location: string;
 				category: string;
 				job_type: string;
+				remote: number;
 				salary_min: number | null;
 				salary_max: number | null;
 				created_at: string;
@@ -27,6 +28,8 @@
 	let selectedCategory = $state('');
 	let selectedLocation = $state('');
 	let filterRemoteOnly = $state(false);
+	let currentPage = $state(1);
+	const jobsPerPage = 10;
 
 	let filteredJobs = $derived(
 		data.jobs.filter((job) => {
@@ -34,13 +37,26 @@
 				job.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
 				job.description.toLowerCase().includes(searchQuery.toLowerCase());
 			const matchesCategory = !selectedCategory || job.category === selectedCategory;
-			const matchesLocation =
-				(!selectedLocation || job.location === selectedLocation) &&
-				(!filterRemoteOnly || job.location.toLowerCase() === 'remote');
+			const matchesLocation = !selectedLocation || job.location === selectedLocation;
+			const matchesRemote = !filterRemoteOnly || job.remote === 1;
 
-			return matchesSearch && matchesCategory && matchesLocation;
+			return matchesSearch && matchesCategory && matchesLocation && matchesRemote;
 		})
 	);
+
+	let totalPages = $derived(Math.ceil(filteredJobs.length / jobsPerPage));
+	let paginatedJobs = $derived(
+		filteredJobs.slice((currentPage - 1) * jobsPerPage, currentPage * jobsPerPage)
+	);
+
+	// Reset to page 1 when filters change
+	$effect(() => {
+		searchQuery;
+		selectedCategory;
+		selectedLocation;
+		filterRemoteOnly;
+		currentPage = 1;
+	});
 
 	function createJob() {
 		goto(`/${data.community.slug}/post-job`);
@@ -61,11 +77,7 @@
 		<div class="max-w-6xl mx-auto px-4">
 			<div class="flex items-center justify-between py-4">
 				<div class="flex items-center">
-					<a
-						href="/"
-						class="text-brutal-lg text-text font-bold tracking-wider hover:animate-brutal-bounce"
-						>fren.work</a
-					>
+					 <a href="/" class="text-brutal-xl text-text font-black uppercase tracking-wider hover:bg-secondary hover:px-2  hover:text-green-400 transition-all ">FREN.WORK</a>
 					<span class="mx-3 text-text font-semibold text-brutal-md">/</span>
 					<h1 class="text-brutal-lg text-text font-bold tracking-wider">{data.community.name}</h1>
 				</div>
@@ -143,6 +155,13 @@
 						<option value="Design">Design</option>
 						<option value="Marketing">Marketing</option>
 						<option value="Sales">Sales</option>
+						<option value="Product">Product</option>
+						<option value="Data">Data</option>
+						<option value="Operations">Operations</option>
+						<option value="Finance">Finance</option>
+						<option value="HR">HR</option>
+						<option value="Customer Success">Customer Success</option>
+						<option value="Legal">Legal</option>
 						<option value="Other">Other</option>
 					</select>
 				</div>
@@ -201,7 +220,7 @@
 				</div>
 			{:else}
 				<div class="divide-y-3 divide-border">
-					{#each filteredJobs as job}
+					{#each paginatedJobs as job}
 						<div class="p-6 hover:bg-surface/20 transition-all duration-150">
 							<div class="flex justify-between items-start">
 								<div class="flex-1">
@@ -212,21 +231,41 @@
 
 									<div class="flex flex-wrap gap-2 mb-3">
 										{#if job.job_type}
-											<span class="bg-brutal-cyan text-text px-3 py-1 font-medium text-xs rounded-brutal bg-blue-200">
-												{job.job_type === 'Full-time' ? '💼' : job.job_type === 'Part-time' ? '⏰' : '📋'} {job.job_type}
+											<span
+												class="bg-brutal-cyan text-text px-3 py-1 font-medium text-xs rounded-brutal bg-blue-200"
+											>
+												{job.job_type === 'Full-time'
+													? '💼'
+													: job.job_type === 'Part-time'
+														? '⏰'
+														: '📋'}
+												{job.job_type}
+											</span>
+										{/if}
+										{#if job.remote}
+											<span
+												class="bg-brutal-green text-text px-3 py-1 font-medium text-xs rounded-brutal bg-green-200"
+											>
+												💻 Remote
 											</span>
 										{/if}
 										{#if job.location}
-											<span class="bg-brutal-purple text-text px-3 py-1 font-medium text-xs rounded-brutal bg-orange-200">
+											<span
+												class="bg-brutal-purple text-text px-3 py-1 font-medium text-xs rounded-brutal bg-orange-200"
+											>
 												📍 {job.location}
 											</span>
 										{/if}
 										{#if job.category}
-											<span class="bg-brutal-orange text-text px-3 py-1 font-medium text-xs rounded-brutal bg-yellow-200">
+											<span
+												class="bg-brutal-orange text-text px-3 py-1 font-medium text-xs rounded-brutal bg-yellow-200"
+											>
 												🏷️ {job.category}
 											</span>
 										{/if}
-										<span class="bg-surface text-text px-3 py-1 font-medium text-xs rounded-brutal bg-green-200 justify-end">
+										<span
+											class="bg-surface text-text px-3 py-1 font-medium text-xs rounded-brutal bg-green-200"
+										>
 											📅 {formatDate(job.created_at)}
 										</span>
 									</div>
@@ -242,6 +281,53 @@
 						</div>
 					{/each}
 				</div>
+
+				<!-- Pagination Controls -->
+				{#if totalPages > 1}
+					<div class="px-6 py-4 border-t-3 border-border bg-surface">
+						<div class="flex items-center justify-between">
+							<div class="text-brutal-sm text-text font-medium">
+								Showing {(currentPage - 1) * jobsPerPage + 1} to {Math.min(
+									currentPage * jobsPerPage,
+									filteredJobs.length
+								)} of {filteredJobs.length} jobs
+							</div>
+							<div class="flex items-center gap-2">
+								<button
+									onclick={() => (currentPage = Math.max(1, currentPage - 1))}
+									disabled={currentPage === 1}
+									class="bg-surface text-text px-3 py-2 border-3 border-border font-semibold tracking-wide shadow-brutal-sm hover:shadow-brutal-hover hover:translate-x-1 hover:translate-y-1 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:translate-x-0 disabled:hover:translate-y-0 disabled:hover:shadow-brutal-sm transition-all duration-150 rounded-brutal"
+								>
+									← Prev
+								</button>
+
+								{#each Array.from({ length: totalPages }, (_, i) => i + 1) as pageNum}
+									{#if pageNum === currentPage || pageNum === 1 || pageNum === totalPages || (pageNum >= currentPage - 1 && pageNum <= currentPage + 1)}
+										<button
+											onclick={() => (currentPage = pageNum)}
+											class="px-3 py-2 border-3 border-border font-semibold tracking-wide shadow-brutal-sm hover:shadow-brutal-hover hover:translate-x-1 hover:translate-y-1 transition-all duration-150 rounded-brutal {pageNum ===
+											currentPage
+												? 'bg-green-400 text-text'
+												: 'bg-surface text-text'}"
+										>
+											{pageNum}
+										</button>
+									{:else if pageNum === currentPage - 2 || pageNum === currentPage + 2}
+										<span class="text-text font-medium">...</span>
+									{/if}
+								{/each}
+
+								<button
+									onclick={() => (currentPage = Math.min(totalPages, currentPage + 1))}
+									disabled={currentPage === totalPages}
+									class="bg-surface text-text px-3 py-2 border-3 border-border font-semibold tracking-wide shadow-brutal-sm hover:shadow-brutal-hover hover:translate-x-1 hover:translate-y-1 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:translate-x-0 disabled:hover:translate-y-0 disabled:hover:shadow-brutal-sm transition-all duration-150 rounded-brutal"
+								>
+									Next →
+								</button>
+							</div>
+						</div>
+					</div>
+				{/if}
 			{/if}
 		</div>
 	</main>

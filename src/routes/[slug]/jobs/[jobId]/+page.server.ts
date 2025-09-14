@@ -42,6 +42,7 @@ export const load: PageServerLoad = async ({ params }) => {
                 location: job.location,
                 category: job.category,
                 job_type: job.job_type,
+                remote: job.remote,
                 salary_min: job.salary_min,
                 salary_max: job.salary_max
             }

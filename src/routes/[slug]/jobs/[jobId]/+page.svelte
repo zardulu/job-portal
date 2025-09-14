@@ -15,7 +15,8 @@
                 location: string;
                 category: string;
                 job_type?: string;
-                contact_info: string;
+                remote?: number;
+                contact_info?: string;
                 salary_min?: number;
                 salary_max?: number;
                 created_at: string;
@@ -88,6 +89,11 @@
                                     {data.job.job_type === 'Full-time' ? '💼' : data.job.job_type === 'Part-time' ? '⏰' : '📋'} {data.job.job_type}
                                 </span>
                             {/if}
+                            {#if data.job.remote}
+                                <span class="bg-brutal-green text-white px-3 py-1 font-semibold text-brutal-sm rounded-brutal">
+                                    💻 Remote
+                                </span>
+                            {/if}
                             {#if data.job.company}
                                 <span class="bg-brutal-blue text-white px-3 py-1 font-semibold text-brutal-sm rounded-brutal">
                                     🏢 {data.job.company}
@@ -139,6 +145,12 @@
                                         <dd class="text-text font-medium text-base">{data.job.job_type}</dd>
                                     </div>
                                 {/if}
+                                {#if data.job.remote}
+                                    <div>
+                                        <dt class="text-brutal-sm font-semibold text-text mb-1">💻 Remote</dt>
+                                        <dd class="text-text font-medium text-base">Yes</dd>
+                                    </div>
+                                {/if}
                                 {#if data.job.company}
                                     <div>
                                         <dt class="text-brutal-sm font-semibold text-text mb-1">🏢 Company</dt>
@@ -171,23 +183,32 @@
                         </div>
 
                         <!-- Apply Section -->
-                        <div class="bg-green-400 border-3 border-border shadow-brutal-soft p-4 rounded-brutal">
-                            <h3 class="text-brutal-md font-semibold text-text mb-3 text-center">Apply for This Job</h3>
-                            <p class="text-text font-medium text-brutal-sm mb-4 text-center">
-                                Interested? Reach out directly to the hiring team.
-                            </p>
-                            <a
-                                href="mailto:{data.job.contact_info}?subject=Application for {data.job.title}"
-                                class="w-full bg-surface text-text text-center py-3 px-4 border-3 border-border font-semibold tracking-wide shadow-brutal-sm hover:shadow-brutal-hover hover:translate-x-1 hover:translate-y-1 transition-all duration-150 block rounded-brutal"
-                            >
-                                Apply Now
-                            </a>
-                            <div class="bg-surface border-2 border-border p-2 mt-3 shadow-brutal-soft rounded">
-                                <p class="text-text font-medium text-xs text-center">
-                                    {data.job.contact_info}
+                        {#if data.job.contact_info}
+                            <div class="bg-green-400 border-3 border-border shadow-brutal-soft p-4 rounded-brutal">
+                                <h3 class="text-brutal-md font-semibold text-text mb-3 text-center">Apply for This Job</h3>
+                                <p class="text-text font-medium text-brutal-sm mb-4 text-center">
+                                    Interested? Reach out directly to the hiring team.
+                                </p>
+                                <a
+                                    href="mailto:{data.job.contact_info}?subject=Application for {data.job.title}"
+                                    class="w-full bg-surface text-text text-center py-3 px-4 border-3 border-border font-semibold tracking-wide shadow-brutal-sm hover:shadow-brutal-hover hover:translate-x-1 hover:translate-y-1 transition-all duration-150 block rounded-brutal"
+                                >
+                                    Apply Now
+                                </a>
+                                <div class="bg-surface border-2 border-border p-2 mt-3 shadow-brutal-soft rounded">
+                                    <p class="text-text font-medium text-xs text-center">
+                                        {data.job.contact_info}
+                                    </p>
+                                </div>
+                            </div>
+                        {:else}
+                            <div class="bg-surface border-3 border-border shadow-brutal-soft p-4 rounded-brutal">
+                                <h3 class="text-brutal-md font-semibold text-text mb-3 text-center">How to Apply</h3>
+                                <p class="text-text font-medium text-brutal-sm text-center">
+                                    Contact information not provided. Check the job description for application instructions.
                                 </p>
                             </div>
-                        </div>
+                        {/if}
 
                         <!-- Motivation Box -->
                         <div class="bg-surface border-3 border-border shadow-brutal-soft p-4 rounded-brutal">

@@ -52,7 +52,7 @@
     <nav class="bg-primary border-b-4 border-border shadow-brutal">
         <div class="flex items-center justify-between p-6">
             <div class="flex items-center gap-4">
-                <a href="/" class="text-brutal-xl text-text font-black uppercase tracking-wider hover:bg-secondary hover:px-2 transition-all">FREN.WORK</a>
+                <a href="/" class="text-brutal-xl text-text font-black uppercase tracking-wider hover:bg-secondary hover:px-2  hover:text-green-400 transition-all ">FREN.WORK</a>
                 <span class="text-brutal-lg font-black">/</span>
                 <a href="/{data.community.slug}" class="text-brutal-lg text-text font-black uppercase hover:bg-accent hover:px-2 transition-all">{data.community.name}</a>
                 <span class="text-brutal-lg font-black">/</span>

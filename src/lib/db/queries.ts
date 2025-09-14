@@ -18,12 +18,13 @@ export interface Job {
     title: string;
     company: string;
     location: string;
-    category: string;
+    category: string | null;
     job_type: string;
+    remote: number;
     salary_min: number | null;
     salary_max: number | null;
     description: string;
-    contact_info: string;
+    contact_info: string | null;
     poster_email: string;
     edit_token: string | null;
     token_expires: string | null;
@@ -41,12 +42,13 @@ export interface CreateJobData {
     title: string;
     company: string;
     location: string;
-    category: string;
+    category?: string | null;
     job_type: string;
+    remote?: number;
     salary_min?: number | null;
     salary_max?: number | null;
     description: string;
-    contact_info: string;
+    contact_info?: string | null;
     poster_email: string;
 }
 
@@ -127,9 +129,9 @@ export async function createJob(data: CreateJobData): Promise<{ job: Job; editTo
     tokenExpires.setHours(tokenExpires.getHours() + 24); // 24 hour expiry
 
     const result = await db.execute(
-        `INSERT INTO jobs (community_id, title, company, location, category, job_type, salary_min, salary_max, description, contact_info, poster_email, edit_token, token_expires) 
-         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-        [data.community_id, data.title, data.company, data.location, data.category, data.job_type, data.salary_min, data.salary_max, data.description, data.contact_info, data.poster_email, editToken, tokenExpires.toISOString()]
+        `INSERT INTO jobs (community_id, title, company, location, category, job_type, remote, salary_min, salary_max, description, contact_info, poster_email, edit_token, token_expires) 
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        [data.community_id, data.title, data.company, data.location, data.category || null, data.job_type, data.remote || 0, data.salary_min, data.salary_max, data.description, data.contact_info || null, data.poster_email, editToken, tokenExpires.toISOString()]
     );
 
     const jobId = Number(result.lastInsertRowid);
@@ -155,12 +157,13 @@ export async function getJobById(id: number): Promise<Job | null> {
         title: row.title as string,
         company: row.company as string,
         location: row.location as string,
-        category: row.category as string,
+        category: row.category as string | null,
         job_type: row.job_type as string,
+        remote: row.remote as number,
         salary_min: row.salary_min as number | null,
         salary_max: row.salary_max as number | null,
         description: row.description as string,
-        contact_info: row.contact_info as string,
+        contact_info: row.contact_info as string | null,
         poster_email: row.poster_email as string,
         edit_token: row.edit_token as string | null,
         token_expires: row.token_expires as string | null,
@@ -177,12 +180,13 @@ export async function getJobsByCommunityId(communityId: number): Promise<Job[]> 
         title: row.title as string,
         company: row.company as string,
         location: row.location as string,
-        category: row.category as string,
+        category: row.category as string | null,
         job_type: row.job_type as string,
+        remote: row.remote as number,
         salary_min: row.salary_min as number | null,
         salary_max: row.salary_max as number | null,
         description: row.description as string,
-        contact_info: row.contact_info as string,
+        contact_info: row.contact_info as string | null,
         poster_email: row.poster_email as string,
         edit_token: row.edit_token as string | null,
         token_expires: row.token_expires as string | null,
@@ -204,12 +208,13 @@ export async function getJobByEditToken(token: string): Promise<Job | null> {
         title: row.title as string,
         company: row.company as string,
         location: row.location as string,
-        category: row.category as string,
+        category: row.category as string | null,
         job_type: row.job_type as string,
+        remote: row.remote as number,
         salary_min: row.salary_min as number | null,
         salary_max: row.salary_max as number | null,
         description: row.description as string,
-        contact_info: row.contact_info as string,
+        contact_info: row.contact_info as string | null,
         poster_email: row.poster_email as string,
         edit_token: row.edit_token as string | null,
         token_expires: row.token_expires as string | null,
@@ -233,13 +238,17 @@ export async function updateJob(id: number, data: Partial<CreateJobData>): Promi
         updates.push('location = ?');
         args.push(data.location);
     }
-    if (data.category) {
+    if (data.category !== undefined) {
         updates.push('category = ?');
         args.push(data.category);
     }
     if (data.job_type) {
         updates.push('job_type = ?');
         args.push(data.job_type);
+    }
+    if (data.remote !== undefined) {
+        updates.push('remote = ?');
+        args.push(data.remote);
     }
     if (data.salary_min !== undefined) {
         updates.push('salary_min = ?');
@@ -253,7 +262,7 @@ export async function updateJob(id: number, data: Partial<CreateJobData>): Promi
         updates.push('description = ?');
         args.push(data.description);
     }
-    if (data.contact_info) {
+    if (data.contact_info !== undefined) {
         updates.push('contact_info = ?');
         args.push(data.contact_info);
     }
