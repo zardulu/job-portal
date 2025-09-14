@@ -1,13 +1,14 @@
-name = "job-portal"
-main = ".svelte-kit/output/server/index.js"
+name = "frenwork"
+main = ".svelte-kit/cloudflare/_worker.js"
 compatibility_date = "2024-09-14"
+compatibility_flags = ["nodejs_compat"]
 
 [site]
 bucket = ".svelte-kit/output/client"
 
-# Environment variables will be set in the Cloudflare Workers dashboard
-# Add these variables in your Workers settings:
-# - TURSO_DATABASE_URL
-# - TURSO_AUTH_TOKEN  
-# - RESEND_API_KEY
-# - EMAIL_FROM
+# Environment variables - set these in your Cloudflare Workers dashboard
+# [vars]
+# TURSO_DATABASE_URL = "your_database_url"
+# TURSO_AUTH_TOKEN = "your_auth_token"  
+# RESEND_API_KEY = "your_resend_key"
+# EMAIL_FROM = "your_email"
