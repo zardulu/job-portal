@@ -1,5 +1,4 @@
-// Simple email service for sending magic links
-// In production, you'd want to use a service like SendGrid, Mailgun, or similar
+// Simple email service for sending magic links using Resend API directly
 import { env } from '$env/dynamic/private';
 
 export interface EmailData {
@@ -8,9 +7,6 @@ export interface EmailData {
 	text: string;
 	html?: string;
 }
-
-// Initialize Resend only when needed to avoid bundling issues
-let resend: any = null;
 
 export async function sendEmail(data: EmailData): Promise<boolean> {
 	try {
@@ -33,19 +29,27 @@ export async function sendEmail(data: EmailData): Promise<boolean> {
 			return true;
 		}
 
-		// Dynamically import Resend only when needed
-		if (!resend) {
-			const { Resend } = await import('resend');
-			resend = new Resend(env.RESEND_API_KEY);
-		}
-
-		await resend.emails.send({
-			from: env.EMAIL_FROM || 'Job Board <onboarding@resend.dev>',
-			to: [data.to],
-			subject: data.subject,
-			text: data.text,
-			html: data.html
+		// Use Resend API directly via fetch to avoid bundling issues
+		const response = await fetch('https://api.resend.com/emails', {
+			method: 'POST',
+			headers: {
+				'Authorization': `Bearer ${env.RESEND_API_KEY}`,
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify({
+				from: env.EMAIL_FROM || 'Job Board <onboarding@resend.dev>',
+				to: [data.to],
+				subject: data.subject,
+				text: data.text,
+				html: data.html
+			})
 		});
+
+		if (!response.ok) {
+			const errorData = await response.text();
+			console.error('Resend API error:', response.status, errorData);
+			return false;
+		}
 
 		return true;
 	} catch (error) {
