@@ -3,12 +3,25 @@ main = ".svelte-kit/cloudflare/_worker.js"
 compatibility_date = "2024-09-14"
 compatibility_flags = ["nodejs_compat"]
 
-[site]
-bucket = ".svelte-kit/output/client"
+[assets]
+directory = ".svelte-kit/output/client"
 
-# Environment variables - set these in your Cloudflare Workers dashboard
-# [vars]
-# TURSO_DATABASE_URL = "your_database_url"
-# TURSO_AUTH_TOKEN = "your_auth_token"  
-# RESEND_API_KEY = "your_resend_key"
-# EMAIL_FROM = "your_email"
+# Production environment (default)
+[vars]
+# Use secrets for production (more secure)
+# wrangler secret put TURSO_DATABASE_URL
+# wrangler secret put TURSO_AUTH_TOKEN
+# wrangler secret put RESEND_API_KEY
+# wrangler secret put EMAIL_FROM
+
+# Development environment
+[env.dev]
+name = "frenwork-dev"
+[env.dev.vars]
+# You can put non-sensitive dev variables here
+# TURSO_DATABASE_URL = "your-dev-database-url"
+# TURSO_AUTH_TOKEN = "your-dev-auth-token"
+
+# Staging environment  
+[env.staging]
+name = "frenwork-staging"

@@ -1,5 +1,18 @@
 import { db } from './server.js';
-import { randomBytes } from 'crypto';
+
+// Web Crypto API compatible random bytes generator for Cloudflare Workers
+function randomBytes(size: number): { toString: (encoding: string) => string } {
+    const array = new Uint8Array(size);
+    crypto.getRandomValues(array);
+    return {
+        toString: (encoding: string) => {
+            if (encoding === 'hex') {
+                return Array.from(array, byte => byte.toString(16).padStart(2, '0')).join('');
+            }
+            throw new Error(`Unsupported encoding: ${encoding}`);
+        }
+    };
+}
 
 export interface Community {
     id: number;
