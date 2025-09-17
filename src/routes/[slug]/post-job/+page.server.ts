@@ -70,7 +70,6 @@ export const actions: Actions = {
         // Use test secret key in development mode
         if (isDevelopmentMode()) {
             secretKey = TURNSTILE_SECRET_KEY_TEST;
-            console.log('🧪 Using development mode for Turnstile');
         }
         
         if (!secretKey) {
@@ -100,7 +99,6 @@ export const actions: Actions = {
 
         // Rate limiting check
         const rateLimitKey = getRateLimitKey(clientIP, 'post_job');
-        console.log(`📊 Job posting attempt from IP: ${clientIP}`);
 
         // Enhanced email validation for poster email
         const posterEmailValidation = validateEmail(jobData.poster_email);

@@ -28,6 +28,13 @@
     let turnstileWidget: string | null = null;
 
     onMount(() => {
+        // Check if Turnstile script is already loaded
+        if (window.turnstile) {
+            turnstileLoaded = true;
+            setupCallbacks();
+            return;
+        }
+
         // Load Turnstile script
         const script = document.createElement('script');
         script.src = 'https://challenges.cloudflare.com/turnstile/v0/api.js';
@@ -35,31 +42,10 @@
         script.defer = true;
         
         script.onload = () => {
-            turnstileLoaded = true;
-            // Initialize Turnstile widget after script loads
+            // Wait a bit for Turnstile to initialize
             setTimeout(() => {
-                if (window.turnstile) {
-                    const widget = document.querySelector('.cf-turnstile');
-                    if (widget) {
-                        turnstileWidget = window.turnstile.render(widget, {
-                            sitekey: TURNSTILE_SITE_KEY,
-                            callback: (token: string) => {
-                                turnstileToken = token;
-                                console.log('✅ Turnstile token received');
-                            },
-                            'error-callback': () => {
-                                turnstileToken = '';
-                                console.warn('❌ Turnstile error');
-                            },
-                            'expired-callback': () => {
-                                turnstileToken = '';
-                                console.warn('⏰ Turnstile token expired');
-                            },
-                            theme: 'light',
-                            size: 'normal'
-                        });
-                    }
-                }
+                turnstileLoaded = true;
+                setupCallbacks();
             }, 100);
         };
         
@@ -70,12 +56,55 @@
             if (script.parentNode) {
                 script.parentNode.removeChild(script);
             }
+            cleanupCallbacks();
         };
     });
+    
+    function setupCallbacks() {
+        // Set up unique callback functions for job posting
+        window.onTurnstileSuccessJobPost = (token: string) => {
+            turnstileToken = token;
+        };
+        
+        window.onTurnstileErrorJobPost = () => {
+            turnstileToken = '';
+        };
+        
+        window.onTurnstileExpiredJobPost = () => {
+            turnstileToken = '';
+        };
+        
+        // Fallback: manually render widgets if auto-render doesn't work
+        setTimeout(() => {
+            const widgets = document.querySelectorAll('.cf-turnstile');
+            if (window.turnstile && widgets.length > 0) {
+                widgets.forEach(widget => {
+                    // Only render if widget is empty (not already rendered)
+                    if (widget.innerHTML.trim().length === 0) {
+                        window.turnstile?.render(widget, {
+                            sitekey: TURNSTILE_SITE_KEY,
+                            callback: window.onTurnstileSuccessJobPost,
+                            'error-callback': window.onTurnstileErrorJobPost,
+                            'expired-callback': window.onTurnstileExpiredJobPost,
+                            theme: 'light',
+                            size: 'normal'
+                        });
+                    }
+                });
+            }
+        }, 500);
+    }
+    
+    function cleanupCallbacks() {
+            // Clean up job posting callbacks
+            delete window.onTurnstileSuccessJobPost;
+            delete window.onTurnstileErrorJobPost;
+            delete window.onTurnstileExpiredJobPost;
+    }
 
     function resetTurnstile() {
-        if (window.turnstile && turnstileWidget) {
-            window.turnstile.reset(turnstileWidget);
+        if (window.turnstile) {
+            window.turnstile.reset();
             turnstileToken = '';
         }
     }
@@ -198,6 +227,7 @@
                         class="w-full px-4 py-3 border-3 border-border bg-bg text-text font-medium text-base shadow-brutal-sm focus:shadow-brutal focus:translate-x-1 focus:translate-y-1 transition-all duration-100 rounded-brutal"
                     >
                         <option value="">Select Category</option>
+                        <option value="Software Development">Software Development</option>
                         <option value="Engineering">Engineering</option>
                         <option value="Design">Design</option>
                         <option value="Marketing">Marketing</option>
@@ -320,7 +350,13 @@
                         <p class="text-brutal-sm font-medium text-text mb-3">Security Verification</p>
                         {#if turnstileLoaded}
                             <div class="flex justify-center">
-                                <div class="cf-turnstile" data-sitekey={TURNSTILE_SITE_KEY}></div>
+                                <div class="cf-turnstile" 
+                                     data-sitekey={TURNSTILE_SITE_KEY}
+                                     data-callback="onTurnstileSuccessJobPost"
+                                     data-error-callback="onTurnstileErrorJobPost"
+                                     data-expired-callback="onTurnstileExpiredJobPost"
+                                     data-theme="light"
+                                     data-size="normal"></div>
                             </div>
                         {:else}
                             <div class="bg-surface border-3 border-border p-4 rounded-brutal animate-pulse">

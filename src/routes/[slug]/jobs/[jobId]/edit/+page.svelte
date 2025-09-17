@@ -1,5 +1,6 @@
 <script lang="ts">
     import { enhance } from '$app/forms';
+    import { page } from '$app/stores';
     import { goto } from '$app/navigation';
     
     interface Props {
@@ -131,6 +132,7 @@
                             required
                             class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                         >
+                            <option value="Software Development" selected={data.job.category === 'Software Development'}>Software Development</option>
                             <option value="Engineering" selected={data.job.category === 'Engineering'}>Engineering</option>
                             <option value="Design" selected={data.job.category === 'Design'}>Design</option>
                             <option value="Marketing" selected={data.job.category === 'Marketing'}>Marketing</option>
@@ -221,8 +223,16 @@
                 <p class="text-sm text-red-700 mb-4">
                     Deleting this job posting will permanently remove it from the job board. This action cannot be undone.
                 </p>
-                <form id="delete-form" method="POST" action="?/deleteJob" class="hidden">
+                <form id="delete-form" method="POST" action="?/deleteJob" use:enhance={() => {
+                    return async ({ result }) => {
+                        if (result.type === 'redirect') {
+                            // Let SvelteKit handle the redirect
+                            return;
+                        }
+                    };
+                }} class="hidden">
                     <!-- Hidden form for deletion -->
+                    <input type="hidden" name="token" value={$page.url.searchParams.get('token') || ''} />
                 </form>
                 <button
                     type="button"

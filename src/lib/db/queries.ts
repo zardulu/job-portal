@@ -134,6 +134,26 @@ export async function getCommunityByAdminToken(token: string): Promise<Community
     };
 }
 
+export async function getCommunityById(id: number): Promise<Community | null> {
+    const result = await db.execute('SELECT * FROM communities WHERE id = ?', [id]);
+
+    if (result.rows.length === 0) {
+        return null;
+    }
+
+    const row = result.rows[0];
+    return {
+        id: row.id as number,
+        slug: row.slug as string,
+        name: row.name as string,
+        description: row.description as string | null,
+        admin_email: row.admin_email as string,
+        admin_token: row.admin_token as string | null,
+        admin_token_expires: row.admin_token_expires as string | null,
+        created_at: row.created_at as string
+    };
+}
+
 // Job functions
 export async function createJob(data: CreateJobData): Promise<{ job: Job; editToken: string }> {
     // Generate edit token

@@ -1,5 +1,6 @@
 <script lang="ts">
-	import { enhance } from '$app/forms';
+    import { enhance } from '$app/forms';
+    import { page } from '$app/stores';
 	import type { PageData, ActionData } from './$types';
 
 	export let data: PageData;
@@ -19,18 +20,11 @@
 				Edit Job Posting
 			</h1>
 
-			{#if form?.success && !form?.deleted}
+			{#if form?.success}
 				<div class="mb-6 p-4 bg-green-50 border border-green-200 rounded-md">
 					<p class="text-green-800">{form.message}</p>
 				</div>
 			{/if}
-
-			{#if form?.success && form?.deleted}
-				<div class="mb-6 p-4 bg-red-50 border border-red-200 rounded-md">
-					<p class="text-red-800">{form.message}</p>
-					<p class="text-sm text-red-600 mt-2">This job posting has been permanently removed.</p>
-				</div>
-			{:else}
 				{#if form?.error}
 					<div class="mb-6 p-4 bg-red-50 border border-red-200 rounded-md">
 						<p class="text-red-800">{form.error}</p>
@@ -113,31 +107,36 @@
 						</svg>
 						Danger Zone
 					</h3>
-					<form
+                <form
 						method="POST"
 						action="?/delete"
 						use:enhance={() => {
 							isDeleting = true;
-							return async ({ update }) => {
-								await update();
+							return async ({ result }) => {
 								isDeleting = false;
+								if (result.type === 'redirect') {
+									// Let SvelteKit handle the redirect
+									return;
+								}
 							};
 						}}
 					>
 						<button
 							type="submit"
 							disabled={isDeleting}
-							onclick={() =>
-								confirm(
-									'Are you sure you want to delete this job posting? This action cannot be undone.'
-								)}
+							onclick={(e) => {
+								if (!confirm('Are you sure you want to delete this job posting? This action cannot be undone.')) {
+									e.preventDefault();
+									return false;
+								}
+							}}
 							class="bg-red-600 text-white py-3 px-6 rounded-lg font-semibold hover:bg-red-700 focus:outline-none focus:ring-3 focus:ring-red-500/50 focus:ring-offset-2 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed shadow-md hover:shadow-lg"
-						>
+                        >
 							{isDeleting ? 'Deleting...' : 'Delete Job Posting'}
 						</button>
-					</form>
+                <input type="hidden" name="token" value={$page.url.searchParams.get('token') || ''} />
+                </form>
 				</div>
-			{/if}
 
 			<div
 				class="mt-8 pt-6 border-t border-gray-100 text-sm text-gray-500 bg-gray-50 -mx-8 -mb-8 px-8 py-6 rounded-b-xl"

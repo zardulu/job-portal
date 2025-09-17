@@ -24,6 +24,18 @@ declare global {
 			reset: (widgetId?: string) => void;
 			remove: (widgetId?: string) => void;
 		};
+		// Global callback functions for Turnstile
+		onTurnstileSuccess?: (token: string) => void;
+		onTurnstileError?: () => void;
+		onTurnstileExpired?: () => void;
+		// Job posting specific callbacks
+		onTurnstileSuccessJobPost?: (token: string) => void;
+		onTurnstileErrorJobPost?: () => void;
+		onTurnstileExpiredJobPost?: () => void;
+		// Create board specific callbacks
+		onTurnstileSuccessCreateBoard?: (token: string) => void;
+		onTurnstileErrorCreateBoard?: () => void;
+		onTurnstileExpiredCreateBoard?: () => void;
 	}
 }
 
@@ -39,13 +51,11 @@ export function isDevelopmentMode(): boolean {
  */
 export async function verifyTurnstile(token: string, secretKey: string, remoteIP?: string): Promise<boolean> {
 	if (!token || !secretKey) {
-		console.warn('Turnstile: Missing token or secret key');
 		return false;
 	}
 
 	// In development mode with test keys, always return true
 	if (isDevelopmentMode() && secretKey === TURNSTILE_SECRET_KEY_TEST) {
-		console.log('✅ Turnstile verification successful (development mode)');
 		return true;
 	}
 
@@ -63,21 +73,13 @@ export async function verifyTurnstile(token: string, secretKey: string, remoteIP
 		});
 
 		if (!response.ok) {
-			console.error('Turnstile: HTTP error', response.status);
 			return false;
 		}
 
 		const result = await response.json();
 		
-		if (result.success) {
-			console.log('✅ Turnstile verification successful');
-			return true;
-		} else {
-			console.warn('❌ Turnstile verification failed:', result['error-codes']);
-			return false;
-		}
+		return result.success;
 	} catch (error) {
-		console.error('❌ Turnstile verification error:', error);
 		return false;
 	}
 }

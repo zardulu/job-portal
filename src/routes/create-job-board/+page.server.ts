@@ -27,7 +27,6 @@ export const actions: Actions = {
         // Use test secret key in development mode
         if (isDevelopmentMode()) {
             secretKey = TURNSTILE_SECRET_KEY_TEST;
-            console.log('🧪 Using development mode for Turnstile');
         }
         
         if (!secretKey) {
@@ -64,8 +63,6 @@ export const actions: Actions = {
         // Rate limiting check
         const rateLimitKey = getRateLimitKey(clientIP, 'create_board');
         // Note: You'll need to implement KV storage for rate limiting in production
-        // For now, we'll skip rate limiting implementation but log the attempt
-        console.log(`📊 Board creation attempt from IP: ${clientIP}`);
 
         // Enhanced email validation
         const emailValidation = validateEmail(email);

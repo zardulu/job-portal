@@ -117,6 +117,14 @@
 			</div>
 		{/if}
 
+		{#if $page?.url?.searchParams?.get('jobDeleted')}
+			<div
+				class="bg-surface text-text px-6 py-3 border-3 border-border shadow-brutal-soft font-semibold mb-6 rounded-brutal"
+			>
+				Job deleted successfully.
+			</div>
+		{/if}
+
 		<!-- Filters and Search -->
 		<div class="bg-surface border-3 border-border shadow-brutal-card p-6 mb-6 rounded-brutal-lg">
 			<h2 class="text-brutal-lg font-semibold text-text mb-4 text-center">Find Your Perfect Job</h2>
@@ -151,6 +159,7 @@
 						class="w-full px-4 py-3 border-3 border-border bg-bg text-text font-medium text-base shadow-brutal-sm focus:shadow-brutal focus:translate-x-1 focus:translate-y-1 transition-all duration-100 rounded-brutal"
 					>
 						<option value="">All Categories</option>
+						<option value="Software Development">Software Development</option>
 						<option value="Engineering">Engineering</option>
 						<option value="Design">Design</option>
 						<option value="Marketing">Marketing</option>

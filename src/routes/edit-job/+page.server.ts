@@ -1,5 +1,5 @@
-import { error, fail } from '@sveltejs/kit';
-import { getJobByEditToken, updateJob, deleteJob, getCommunityBySlug } from '$lib/db/queries.js';
+import { error, fail, redirect } from '@sveltejs/kit';
+import { getJobByEditToken, updateJob, deleteJob, getCommunityById } from '$lib/db/queries.js';
 import type { PageServerLoad, Actions } from './$types';
 
 export const load: PageServerLoad = async ({ url }) => {
@@ -102,8 +102,9 @@ export const actions: Actions = {
         }
     },
 
-    delete: async ({ url }) => {
-        const token = url.searchParams.get('token');
+    delete: async ({ request, url }) => {
+        const data = await request.formData();
+        const token = (data.get('token') as string) || url.searchParams.get('token');
 
         if (!token) {
             return fail(403, { error: 'Edit token is required' });
@@ -124,11 +125,14 @@ export const actions: Actions = {
                 return fail(500, { error: 'Failed to delete job' });
             }
 
-            return { 
-                success: true, 
-                deleted: true,
-                message: 'Job deleted successfully'
-            };
+            // Get the community info to redirect to the job board
+            const community = await getCommunityById(job.community_id);
+            if (community) {
+                throw redirect(303, `/${community.slug}?jobDeleted=true`);
+            } else {
+                // Fallback to homepage if community not found
+                throw redirect(303, '/?jobDeleted=true');
+            }
         } catch (err) {
             console.error('Failed to delete job:', err);
             return fail(500, { error: 'Failed to delete job' });

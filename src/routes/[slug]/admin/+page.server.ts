@@ -59,7 +59,7 @@ export const actions: Actions = {
     deleteJob: async ({ request, params, url }) => {
         const data = await request.formData();
         const jobId = data.get('jobId') as string;
-        const token = url.searchParams.get('token');
+        const token = (data.get('token') as string) || url.searchParams.get('token');
         const { slug } = params;
 
         if (!jobId) {
@@ -85,15 +85,17 @@ export const actions: Actions = {
                 return fail(404, { error: 'Job not found' });
             }
 
-            return { success: true };
+            // Redirect to the job board after successful deletion
+            throw redirect(303, `/${slug}?jobDeleted=true`);
         } catch (err) {
             console.error('Failed to delete job:', err);
             return fail(500, { error: 'Failed to delete job' });
         }
     },
 
-    deleteBoard: async ({ params, url }) => {
-        const token = url.searchParams.get('token');
+    deleteBoard: async ({ request, params, url }) => {
+        const data = await request.formData();
+        const token = (data.get('token') as string) || url.searchParams.get('token');
         const { slug } = params;
 
         if (!token) {

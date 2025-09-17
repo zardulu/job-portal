@@ -1,6 +1,7 @@
 <script lang="ts">
     import '../../../app.css';
     import { enhance } from '$app/forms';
+    import { page } from '$app/stores';
     
     interface Props {
         data: {
@@ -140,15 +141,23 @@
                                         </a>
                                         <form method="POST" action="?/deleteJob" use:enhance={() => {
                                             return async ({ result, update }) => {
-                                                if (result.type === 'success') {
-                                                    await update();
+                                                if (result.type === 'redirect') {
+                                                    // Let SvelteKit handle the redirect
+                                                    return;
                                                 }
+                                                await update();
                                             };
                                         }} class="inline">
+                                            <input type="hidden" name="token" value={$page.url.searchParams.get('token') || ''} />
                                             <input type="hidden" name="jobId" value={job.id} />
                                             <button
                                                 type="submit"
-                                                onclick={() => typeof globalThis !== 'undefined' && globalThis.confirm && globalThis.confirm('DELETE THIS JOB? NO GOING BACK!')}
+                                                onclick={(e) => {
+                                                    if (!(typeof globalThis !== 'undefined' && globalThis.confirm && globalThis.confirm('DELETE THIS JOB? NO GOING BACK!'))) {
+                                                        e.preventDefault();
+                                                        return false;
+                                                    }
+                                                }}
                                                 class="bg-error text-bg px-4 py-2 border-3 border-border font-black uppercase shadow-brutal-sm hover:shadow-none hover:translate-x-1 hover:translate-y-1 transition-all duration-100"
                                             >
                                                 DELETE
@@ -197,8 +206,16 @@
                         <p class="text-brutal-md font-black text-bg uppercase mb-6">
                             DELETING YOUR BOARD WILL NUKE EVERYTHING. NO TAKEBACKS!
                         </p>
-                        <form id="delete-board-form" method="POST" action="?/deleteBoard" class="hidden">
+                        <form id="delete-board-form" method="POST" action="?/deleteBoard" use:enhance={() => {
+                            return async ({ result }) => {
+                                if (result.type === 'redirect') {
+                                    // Let SvelteKit handle the redirect
+                                    return;
+                                }
+                            };
+                        }} class="hidden">
                             <!-- Hidden form for board deletion -->
+                            <input type="hidden" name="token" value={$page.url.searchParams.get('token') || ''} />
                         </form>
                         <button
                             type="button"
