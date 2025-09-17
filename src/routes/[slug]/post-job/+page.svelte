@@ -1,7 +1,9 @@
 <script lang="ts">
     import { enhance } from '$app/forms';
     import { goto } from '$app/navigation';
+    import { onMount } from 'svelte';
     import { countryOptions } from '$lib/countries';
+    import { TURNSTILE_SITE_KEY } from '$lib/turnstile';
     
     interface Props {
         data: {
@@ -21,6 +23,62 @@
     let isRemote = $state(false);
     let jobType = $state<'Full-time' | 'Part-time' | 'Contract'>('Full-time');
     let selectedLocation = $state('🌐 Anywhere');
+    let turnstileToken = $state('');
+    let turnstileLoaded = $state(false);
+    let turnstileWidget: string | null = null;
+
+    onMount(() => {
+        // Load Turnstile script
+        const script = document.createElement('script');
+        script.src = 'https://challenges.cloudflare.com/turnstile/v0/api.js';
+        script.async = true;
+        script.defer = true;
+        
+        script.onload = () => {
+            turnstileLoaded = true;
+            // Initialize Turnstile widget after script loads
+            setTimeout(() => {
+                if (window.turnstile) {
+                    const widget = document.querySelector('.cf-turnstile');
+                    if (widget) {
+                        turnstileWidget = window.turnstile.render(widget, {
+                            sitekey: TURNSTILE_SITE_KEY,
+                            callback: (token: string) => {
+                                turnstileToken = token;
+                                console.log('✅ Turnstile token received');
+                            },
+                            'error-callback': () => {
+                                turnstileToken = '';
+                                console.warn('❌ Turnstile error');
+                            },
+                            'expired-callback': () => {
+                                turnstileToken = '';
+                                console.warn('⏰ Turnstile token expired');
+                            },
+                            theme: 'light',
+                            size: 'normal'
+                        });
+                    }
+                }
+            }, 100);
+        };
+        
+        document.head.appendChild(script);
+
+        return () => {
+            // Cleanup
+            if (script.parentNode) {
+                script.parentNode.removeChild(script);
+            }
+        };
+    });
+
+    function resetTurnstile() {
+        if (window.turnstile && turnstileWidget) {
+            window.turnstile.reset(turnstileWidget);
+            turnstileToken = '';
+        }
+    }
 </script>
 
 <svelte:head>
@@ -62,6 +120,7 @@
                 loading = true;
                 return async ({ result, update }) => {
                     loading = false;
+                    resetTurnstile();
                     if (result.type === 'redirect') {
                         goto(result.location);
                     } else {
@@ -255,6 +314,25 @@
                     </div>
                 </div>
 
+                <!-- Security Verification -->
+                <div class="space-y-4">
+                    <div class="text-center">
+                        <p class="text-brutal-sm font-medium text-text mb-3">Security Verification</p>
+                        {#if turnstileLoaded}
+                            <div class="flex justify-center">
+                                <div class="cf-turnstile" data-sitekey={TURNSTILE_SITE_KEY}></div>
+                            </div>
+                        {:else}
+                            <div class="bg-surface border-3 border-border p-4 rounded-brutal animate-pulse">
+                                <p class="text-brutal-sm text-text">Loading security verification...</p>
+                            </div>
+                        {/if}
+                    </div>
+                </div>
+
+                <!-- Hidden field for Turnstile token -->
+                <input type="hidden" name="cf-turnstile-response" value={turnstileToken} />
+
                 <!-- Action Buttons -->
                 <div class="flex gap-4 justify-center pt-3">
                     <button
@@ -266,12 +344,17 @@
                     </button>
                     <button
                         type="submit"
-                        disabled={loading}
+                        disabled={loading || !turnstileToken}
                         class="bg-green-400 text-text px-6 py-3 border-3 border-border font-semibold tracking-wide shadow-brutal-sm hover:bg-green-500 hover:shadow-brutal-hover hover:translate-x-1 hover:translate-y-1 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:translate-x-0 disabled:hover:translate-y-0 disabled:hover:shadow-brutal-sm transition-all duration-150 rounded-brutal {loading ? 'animate-brutal-pulse' : ''}"
                     >
                         {loading ? 'Posting Job...' : 'Post Job'}
                     </button>
                 </div>
+                {#if !turnstileToken && turnstileLoaded}
+                    <div class="text-center">
+                        <p class="text-brutal-xs text-red-500 mt-2 font-medium">Please complete the security verification above</p>
+                    </div>
+                {/if}
             </form>
 
             <!-- Motivation Section -->

@@ -144,7 +144,7 @@ export async function createJob(data: CreateJobData): Promise<{ job: Job; editTo
     const result = await db.execute(
         `INSERT INTO jobs (community_id, title, company, location, category, job_type, remote, salary_min, salary_max, description, contact_info, poster_email, edit_token, token_expires) 
          VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-        [data.community_id, data.title, data.company, data.location, data.category || null, data.job_type, data.remote || 0, data.salary_min, data.salary_max, data.description, data.contact_info || null, data.poster_email, editToken, tokenExpires.toISOString()]
+        [data.community_id, data.title, data.company, data.location, data.category || null, data.job_type, data.remote || 0, data.salary_min || null, data.salary_max || null, data.description, data.contact_info || null, data.poster_email, editToken, tokenExpires.toISOString()]
     );
 
     const jobId = Number(result.lastInsertRowid);

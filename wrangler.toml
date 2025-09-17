@@ -3,8 +3,13 @@ main = ".svelte-kit/cloudflare/_worker.js"
 compatibility_date = "2024-09-14"
 compatibility_flags = ["nodejs_compat"]
 
+# Run the Worker closer to external origins (Resend API) to reduce egress latency
+[placement]
+mode = "smart"
+
 [assets]
-directory = ".svelte-kit/output/client"
+directory = ".svelte-kit/cloudflare"
+binding = "ASSETS"
 
 # Production environment (default)
 [vars]
@@ -13,6 +18,7 @@ directory = ".svelte-kit/output/client"
 # wrangler secret put TURSO_AUTH_TOKEN
 # wrangler secret put RESEND_API_KEY
 # wrangler secret put EMAIL_FROM
+# wrangler secret put TURNSTILE_SECRET_KEY
 
 # Development environment
 [env.dev]

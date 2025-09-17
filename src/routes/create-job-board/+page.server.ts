@@ -1,14 +1,16 @@
 import { redirect, fail } from '@sveltejs/kit';
 import { createCommunity } from '$lib/db/queries.js';
 import { sendEmail, createAdminMagicLinkEmail } from '$lib/email.js';
+import { verifyTurnstile, validateEmail, getClientIP, getRateLimitKey, isDevelopmentMode, TURNSTILE_SECRET_KEY_TEST } from '$lib/turnstile.js';
 import type { Actions } from './$types';
 
 export const actions: Actions = {
-    default: async ({ request, url }) => {
+    default: async ({ request, url, platform }) => {
         const data = await request.formData();
         const name = data.get('name') as string;
         const email = data.get('email') as string;
         const description = data.get('description') as string;
+        const turnstileToken = data.get('cf-turnstile-response') as string;
 
         if (!name || !email) {
             return fail(400, {
@@ -19,11 +21,57 @@ export const actions: Actions = {
             });
         }
 
-        // Basic email validation
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        if (!emailRegex.test(email)) {
+        // Verify Turnstile token
+        let secretKey = platform?.env?.TURNSTILE_SECRET_KEY;
+        
+        // Use test secret key in development mode
+        if (isDevelopmentMode()) {
+            secretKey = TURNSTILE_SECRET_KEY_TEST;
+            console.log('🧪 Using development mode for Turnstile');
+        }
+        
+        if (!secretKey) {
+            console.error('❌ TURNSTILE_SECRET_KEY not configured');
+            return fail(500, {
+                error: 'Security verification not configured. Please try again later.',
+                name,
+                email,
+                description
+            });
+        }
+
+        if (!turnstileToken) {
             return fail(400, {
-                error: 'Please enter a valid email address',
+                error: 'Please complete the security verification',
+                name,
+                email,
+                description
+            });
+        }
+
+        const clientIP = getClientIP(request);
+        const isValidTurnstile = await verifyTurnstile(turnstileToken, secretKey, clientIP);
+        
+        if (!isValidTurnstile) {
+            return fail(400, {
+                error: 'Security verification failed. Please try again.',
+                name,
+                email,
+                description
+            });
+        }
+
+        // Rate limiting check
+        const rateLimitKey = getRateLimitKey(clientIP, 'create_board');
+        // Note: You'll need to implement KV storage for rate limiting in production
+        // For now, we'll skip rate limiting implementation but log the attempt
+        console.log(`📊 Board creation attempt from IP: ${clientIP}`);
+
+        // Enhanced email validation
+        const emailValidation = validateEmail(email);
+        if (!emailValidation.isValid) {
+            return fail(400, {
+                error: emailValidation.error,
                 name,
                 email,
                 description
@@ -47,14 +95,8 @@ export const actions: Actions = {
             const emailData = createAdminMagicLinkEmail(community.name, adminToken, baseUrl);
             emailData.to = email;
 
-            console.log('📧 Sending admin magic link email...');
-            const emailSent = await sendEmail(emailData);
-            if (!emailSent) {
-                console.error('❌ Failed to send admin magic link email');
-                // Don't fail the request, just log the error
-            } else {
-                console.log('✅ Admin magic link email logged to console');
-            }
+            console.log('📧 Queueing admin magic link email (background)...');
+            platform?.context?.waitUntil(sendEmail(emailData));
 
             console.log(`🎉 Redirecting to: /${community.slug}?created=true`);
             throw redirect(303, `/${community.slug}?created=true`);

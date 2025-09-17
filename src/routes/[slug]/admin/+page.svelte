@@ -78,13 +78,13 @@
 
         <!-- Board Statistics -->
         <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
-            <div class="bg-brutal-cyan border-4 border-border shadow-brutal p-8 transform rotate-1">
+            <div class="bg-brutal-cyan border-4 border-border shadow-brutal p-8">
                 <div class="text-6xl mb-4 text-center">📊</div>
                 <h3 class="font-black text-brutal-md mb-4 uppercase text-center">TOTAL JOBS</h3>
                 <p class="text-6xl font-black text-text text-center">{data.jobs.length}</p>
             </div>
             
-            <div class="bg-brutal-lime border-4 border-border shadow-brutal p-8 transform -rotate-1">
+            <div class="bg-brutal-lime border-4 border-border shadow-brutal p-8">
                 <div class="text-6xl mb-4 text-center">📅</div>
                 <h3 class="font-black text-brutal-md mb-4 uppercase text-center">THIS MONTH</h3>
                 <p class="text-6xl font-black text-text text-center">
@@ -96,7 +96,7 @@
                 </p>
             </div>
             
-            <div class="bg-brutal-pink border-4 border-border shadow-brutal p-8 transform rotate-1">
+            <div class="bg-brutal-pink border-4 border-border shadow-brutal p-8">
                 <div class="text-6xl mb-4 text-center">🚀</div>
                 <h3 class="font-black text-brutal-md mb-4 uppercase text-center">CREATED</h3>
                 <p class="text-brutal-sm font-black text-text text-center">{formatDate(data.community.created_at)}</p>
@@ -124,7 +124,7 @@
                 <div class="p-6">
                     <div class="space-y-6">
                         {#each data.jobs as job}
-                            <div class="bg-bg border-3 border-border shadow-brutal-sm p-6 transform hover:rotate-1 transition-all">
+                            <div class="bg-bg border-3 border-border shadow-brutal-sm p-6">
                                 <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
                                     <div class="flex-1">
                                         <h3 class="text-brutal-lg font-black text-text uppercase mb-2">{job.title}</h3>
@@ -193,7 +193,7 @@
 
                 <div class="border-t-4 border-border pt-8">
                     <h3 class="text-brutal-lg font-black text-error uppercase mb-6">⚠️ DANGER ZONE ⚠️</h3>
-                    <div class="bg-error border-4 border-border shadow-brutal p-6 transform -rotate-1">
+                    <div class="bg-error border-4 border-border shadow-brutal p-6">
                         <p class="text-brutal-md font-black text-bg uppercase mb-6">
                             DELETING YOUR BOARD WILL NUKE EVERYTHING. NO TAKEBACKS!
                         </p>

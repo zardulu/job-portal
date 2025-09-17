@@ -1,5 +1,6 @@
-// Simple email service for sending magic links using Resend API directly
+// Email service using native Resend library for optimal performance
 import { env } from '$env/dynamic/private';
+import { Resend } from 'resend';
 
 export interface EmailData {
 	to: string;
@@ -29,33 +30,40 @@ export async function sendEmail(data: EmailData): Promise<boolean> {
 			return true;
 		}
 
-		// Use Resend API directly via fetch to avoid bundling issues
-		const response = await fetch('https://api.resend.com/emails', {
-			method: 'POST',
-			headers: {
-				'Authorization': `Bearer ${env.RESEND_API_KEY}`,
-				'Content-Type': 'application/json'
-			},
-			body: JSON.stringify({
-				from: env.EMAIL_FROM || 'Job Board <onboarding@resend.dev>',
-				to: [data.to],
-				subject: data.subject,
-				text: data.text,
-				html: data.html
-			})
+		// Use native Resend library for optimal performance
+		const resend = new Resend(env.RESEND_API_KEY);
+		const startedAtMs = Date.now();
+		console.log('[email] Using Resend SDK. EMAIL_FROM configured:', Boolean(env.EMAIL_FROM));
+		const result = await resend.emails.send({
+			from: env.EMAIL_FROM || 'Job Board <onboarding@resend.dev>',
+			to: [data.to],
+			subject: data.subject,
+			text: data.text,
+			html: data.html
 		});
 
-		if (!response.ok) {
-			const errorData = await response.text();
-			console.error('Resend API error:', response.status, errorData);
+		const durationMs = Date.now() - startedAtMs;
+		if (result.error) {
+			console.error('Resend library error:', result.error);
+			console.error(`[email] Resend SDK call failed after ${durationMs}ms`);
 			return false;
 		}
 
+		console.log('Email sent successfully:', result.data?.id);
+		console.log(`[email] Resend SDK call duration: ${durationMs}ms`);
 		return true;
 	} catch (error) {
 		console.error('Error in sendEmail function:', error);
 		return false;
 	}
+}
+
+// Non-blocking email sending for better performance
+export async function sendEmailAsync(data: EmailData): Promise<void> {
+	// Fire and forget - don't await the result
+	sendEmail(data).catch(error => {
+		console.error('Background email sending failed:', error);
+	});
 }
 
 export function createAdminMagicLinkEmail(communityName: string, adminToken: string, baseUrl: string): EmailData {
@@ -85,7 +93,16 @@ FREN.WORK
 <p><small>This link doesn't expire. Use it to manage your board.</small></p>
 <p>From your frens at</p>
 <div style="margin-bottom: 20px;">
-  <span style="background-color: #4ADE80; color: white; padding: 10px 20px; font-family:Arial, sans-serif;  font-weight: 600;">FREN.WORK</span>
+  <a href="https://fren.work" 
+     style="background-color: #4ADE80; 
+            color: white; 
+            padding: 10px 20px; 
+            font-family: Arial, sans-serif; 
+            font-weight: 600; 
+            text-decoration: none; 
+            display: inline-block;">
+    FREN.WORK
+  </a>
 </div>
 <div>
   <a href="mailto:support@fren.work" style="color: #A9A9A9;">support@fren.work</a>

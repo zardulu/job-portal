@@ -12,7 +12,10 @@ declare global {
 				TURSO_AUTH_TOKEN?: string;
 				RESEND_API_KEY?: string;
 				EMAIL_FROM?: string;
+				TURNSTILE_SECRET_KEY?: string;
 			};
+			/** Cloudflare Workers execution context for background tasks */
+			context?: ExecutionContext;
 		}
 	}
 }

@@ -97,7 +97,7 @@
 			<div
 				class="bg-green-400 text-text px-6 py-3 border-3 border-border shadow-brutal-soft font-semibold mb-6 rounded-brutal"
 			>
-				Job board created successfully! Check your email for the management link.
+				Job board created successfully! Check your email for the management link after a few minutes. 🎉
 			</div>
 		{/if}
 
@@ -105,7 +105,7 @@
 			<div
 				class="bg-green-400 text-text px-6 py-3 border-3 border-border shadow-brutal-soft font-semibold mb-6 rounded-brutal"
 			>
-				Job posted successfully! Check your email for the edit link.
+				Job posted successfully! Check your email for the edit link after a few minutes. 🎉
 			</div>
 		{/if}
 

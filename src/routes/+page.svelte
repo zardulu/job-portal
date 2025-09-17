@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
 	import '../app.css';
     import { goto } from '$app/navigation';
     import { page } from '$app/stores';
@@ -7,12 +7,16 @@
         goto('/create-job-board');
     }
 
+	function optimizedBase(src: string): string {
+		return src.replace('/pepes/', '/pepes_optimized/').replace('.png', '');
+	}
+
 	const pepeImages = [
 		{ src: '/pepes/pepe1.png', top: '8%', left: '20%', rotate: -10, width: 200 },
 		{ src: '/pepes/pepe2.png', top: '10%', left: '78%', rotate: 8, width: 250 },
 		{ src: '/pepes/pepe3.png', top: '65%', left: '10%', rotate: 6, width: 250 },
 		{ src: '/pepes/pepe4.png', top: '40%', left: '72%', rotate: -6, width: 250 },
-		{ src: '/pepes/pepe5.png', top: '35%', left: '5%', rotate: 12, width: 250 },
+		{ src: '/pepes/pepe5.png', top: '30%', left: '5%', rotate: 12, width: 250 },
 		{ src: '/pepes/pepe6.png', top: '65%', left: '80%', rotate: -12, width: 250 },
 	];
 </script>
@@ -32,10 +36,15 @@
 	<main class="relative flex flex-1 flex-col items-center justify-center gap-12 p-8">
 		<div class="pointer-events-none absolute inset-0">
 			{#each pepeImages as img (img.src)}
-				<img 
-					src={img.src} 
+				<img
+					src={`${optimizedBase(img.src)}-256.png`}
+					srcset={`${optimizedBase(img.src)}-256.png 256w, ${optimizedBase(img.src)}-512.png 512w`}
+					sizes={`${img.width}px`}
 					alt="Pepe"
 					loading="lazy"
+					decoding="async"
+					fetchpriority="low"
+					width={img.width}
 					class="absolute select-none"
 					style={`top:${img.top};left:${img.left};transform:rotate(${img.rotate}deg);width:${img.width}px;`}
 				/>
@@ -55,7 +64,7 @@
 				<span class="bg-green-400 text-white px-4 py-2 inline-block transform shadow-brutal">FREN.WORK</span>
 			</h2>
 			<p class="text-brutal-lg text-text mb-12 font-bold uppercase tracking-wide max-w-2xl mx-auto">
-				WHY HIRE STRANGERS WHEN YOU CAN HIRE FRENS?
+				START HIRING FROM YOUR COMMUNITY
 			</p>
 			
 			<button 
@@ -64,7 +73,7 @@
 			>
 				+ CREATE JOB BOARD
 			</button>
-			<p class="text-brutal-sm text-green-400 mt-4 font-medium italic uppercase tracking-wide max-w-2xl mx-auto">
+			<p class="text-brutal-sm text-green-400 mt-4 font-medium italic tracking-wide max-w-2xl mx-auto">
 				No signups required!
 			</p>
 		</div>
@@ -125,7 +134,7 @@
 				</a>
 			</div>
 			<div class="text-text font-bold uppercase tracking-wide text-sm">
-				© 2025 FREN.WORK
+				
 			</div>
 		</div>
 	</footer>

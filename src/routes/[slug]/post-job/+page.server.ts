@@ -1,6 +1,7 @@
 import { redirect, fail, error } from '@sveltejs/kit';
 import { getCommunityBySlug, createJob } from '$lib/db/queries.js';
 import { sendEmail, createJobEditMagicLinkEmail } from '$lib/email.js';
+import { verifyTurnstile, validateEmail, getClientIP, getRateLimitKey, isDevelopmentMode, TURNSTILE_SECRET_KEY_TEST } from '$lib/turnstile.js';
 import type { PageServerLoad, Actions } from './$types';
 
 export const load: PageServerLoad = async ({ params }) => {
@@ -33,9 +34,10 @@ export const load: PageServerLoad = async ({ params }) => {
 };
 
 export const actions: Actions = {
-    default: async ({ request, params, url }) => {
+    default: async ({ request, params, url, platform }) => {
         const data = await request.formData();
         const { slug } = params;
+        const turnstileToken = data.get('cf-turnstile-response') as string;
 
         const jobData = {
             title: data.get('title') as string,
@@ -62,21 +64,62 @@ export const actions: Actions = {
             }
         }
 
-        // Basic email validation
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        if (!emailRegex.test(jobData.poster_email)) {
+        // Verify Turnstile token
+        let secretKey = platform?.env?.TURNSTILE_SECRET_KEY;
+        
+        // Use test secret key in development mode
+        if (isDevelopmentMode()) {
+            secretKey = TURNSTILE_SECRET_KEY_TEST;
+            console.log('🧪 Using development mode for Turnstile');
+        }
+        
+        if (!secretKey) {
+            console.error('❌ TURNSTILE_SECRET_KEY not configured');
+            return fail(500, {
+                error: 'Security verification not configured. Please try again later.',
+                ...jobData
+            });
+        }
+
+        if (!turnstileToken) {
             return fail(400, {
-                error: 'Please enter a valid email address',
+                error: 'Please complete the security verification',
+                ...jobData
+            });
+        }
+
+        const clientIP = getClientIP(request);
+        const isValidTurnstile = await verifyTurnstile(turnstileToken, secretKey, clientIP);
+        
+        if (!isValidTurnstile) {
+            return fail(400, {
+                error: 'Security verification failed. Please try again.',
+                ...jobData
+            });
+        }
+
+        // Rate limiting check
+        const rateLimitKey = getRateLimitKey(clientIP, 'post_job');
+        console.log(`📊 Job posting attempt from IP: ${clientIP}`);
+
+        // Enhanced email validation for poster email
+        const posterEmailValidation = validateEmail(jobData.poster_email);
+        if (!posterEmailValidation.isValid) {
+            return fail(400, {
+                error: posterEmailValidation.error,
                 ...jobData
             });
         }
 
         // Validate contact_info email if provided
-        if (jobData.contact_info && jobData.contact_info.trim() && !emailRegex.test(jobData.contact_info)) {
-            return fail(400, {
-                error: 'Please enter a valid contact email address',
-                ...jobData
-            });
+        if (jobData.contact_info && jobData.contact_info.trim()) {
+            const contactEmailValidation = validateEmail(jobData.contact_info);
+            if (!contactEmailValidation.isValid) {
+                return fail(400, {
+                    error: `Contact email: ${contactEmailValidation.error}`,
+                    ...jobData
+                });
+            }
         }
 
         try {
@@ -107,11 +150,8 @@ export const actions: Actions = {
             const emailData = createJobEditMagicLinkEmail(job.title, editToken, baseUrl);
             emailData.to = job.poster_email;
 
-            const emailSent = await sendEmail(emailData);
-            if (!emailSent) {
-                console.error('Failed to send job edit magic link email');
-                // Don't fail the request, just log the error
-            }
+            console.log('Queueing job edit magic link email (background)...');
+            platform?.context?.waitUntil(sendEmail(emailData));
 
             throw redirect(303, `/${slug}?posted=true`);
         } catch (err) {
