@@ -4,6 +4,7 @@
     import { onMount } from 'svelte';
     import { countryOptions } from '$lib/countries';
     import { TURNSTILE_SITE_KEY } from '$lib/turnstile';
+    import '../../app.css';
     
     interface Props {
         data: {
