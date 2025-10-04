@@ -75,15 +75,15 @@
 	<!-- Brutalist Navbar -->
 	<nav class="bg-primary border-b-4 border-border shadow-brutal rounded-b-brutal">
 		<div class="max-w-6xl mx-auto px-4">
-			<div class="flex items-center justify-between py-4">
+			<div class="flex items-center justify-between py-3">
 				<div class="flex items-center">
-					 <a href="/" class="text-brutal-xl text-text font-black uppercase tracking-wider hover:bg-secondary hover:px-2  hover:text-green-400 transition-all ">FREN.WORK</a>
-					<span class="mx-3 text-text font-semibold text-brutal-md">/</span>
-					<h1 class="text-brutal-lg text-text font-bold tracking-wider">{data.community.name}</h1>
+					 <a href="/" class="text-xl md:text-brutal-xl text-text font-black uppercase tracking-wider hover:bg-secondary hover:px-2  hover:text-green-400 transition-all">FREN.WORK</a>
+					<span class="mx-2 md:mx-3 text-text font-semibold text-sm md:text-brutal-md">/</span>
+					<h1 class="text-base md:text-brutal-lg text-text font-bold tracking-wider">{data.community.name}</h1>
 				</div>
 				<button
 					onclick={createJob}
-					class="bg-green-400 text-text px-4 py-2 border-3 border-border font-semibold tracking-wide shadow-brutal-sm hover:bg-green-500 hover:shadow-brutal-hover hover:translate-x-1 hover:translate-y-1 transition-all duration-150 rounded-brutal"
+					class="bg-green-400 text-text px-3 md:px-4 py-2 border-3 border-border font-semibold tracking-wide shadow-brutal-sm hover:bg-green-500 hover:shadow-brutal-hover hover:translate-x-1 hover:translate-y-1 transition-all duration-150 rounded-brutal whitespace-nowrap text-sm md:text-base"
 				>
 					+ Post Job
 				</button>
@@ -240,9 +240,9 @@
 
 									<div class="flex flex-wrap gap-2 mb-3">
 										{#if job.job_type}
-											<span
-												class="bg-brutal-cyan text-text px-3 py-1 font-medium text-xs rounded-brutal bg-blue-200"
-											>
+									<span
+										class="bg-brutal-cyan text-text px-3 py-1 font-medium text-xs rounded-brutal bg-blue-200 whitespace-nowrap"
+									>
 												{job.job_type === 'Full-time'
 													? '💼'
 													: job.job_type === 'Part-time'
@@ -252,29 +252,29 @@
 											</span>
 										{/if}
 										{#if job.remote}
-											<span
-												class="bg-brutal-green text-text px-3 py-1 font-medium text-xs rounded-brutal bg-green-200"
-											>
+									<span
+										class="bg-brutal-green text-text px-3 py-1 font-medium text-xs rounded-brutal bg-green-200 whitespace-nowrap"
+									>
 												💻 Remote
 											</span>
 										{/if}
 										{#if job.location}
-											<span
-												class="bg-brutal-purple text-text px-3 py-1 font-medium text-xs rounded-brutal bg-orange-200"
-											>
+									<span
+										class="bg-brutal-purple text-text px-3 py-1 font-medium text-xs rounded-brutal bg-orange-200 whitespace-nowrap"
+									>
 												📍 {job.location}
 											</span>
 										{/if}
 										{#if job.category}
-											<span
-												class="bg-brutal-orange text-text px-3 py-1 font-medium text-xs rounded-brutal bg-yellow-200"
-											>
+									<span
+										class="bg-brutal-orange text-text px-3 py-1 font-medium text-xs rounded-brutal bg-yellow-200 whitespace-nowrap"
+									>
 												🏷️ {job.category}
 											</span>
 										{/if}
-										<span
-											class="bg-surface text-text px-3 py-1 font-medium text-xs rounded-brutal bg-green-200"
-										>
+								<span
+									class="bg-surface text-text px-3 py-1 font-medium text-xs rounded-brutal bg-green-200 whitespace-nowrap"
+								>
 											📅 {formatDate(job.created_at)}
 										</span>
 									</div>

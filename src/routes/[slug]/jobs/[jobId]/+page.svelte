@@ -51,7 +51,7 @@
     <!-- Brutalist Navbar -->
     <nav class="bg-primary border-b-4 border-border shadow-brutal rounded-b-brutal">
         <div class="max-w-5xl mx-auto px-4">
-            <div class="flex items-center justify-between py-4">
+			<div class="flex items-center justify-between py-3">
                 <!-- <div class="flex items-center">
                     <a href="/" class="text-brutal-lg text-text font-bold tracking-wider hover:animate-brutal-bounce">fren.work</a>
                     <span class="mx-3 text-text font-semibold text-brutal-md">/</span>
@@ -59,17 +59,17 @@
                     <span class="mx-3 text-text font-semibold text-brutal-md">/</span>
                     <span class="text-brutal-lg text-text font-bold">Job Details</span>
                 </div> -->
-                <div class="flex items-center">
-                    <a href="/" class="text-brutal-xl text-text font-black uppercase tracking-wider hover:bg-secondary hover:px-2  hover:text-green-400 transition-all ">FREN.WORK</a>
-                   <span class="mx-3 text-text font-semibold text-brutal-md">/</span>
-                   <a href="/{data.community.slug}" class="text-brutal-lg text-text font-bold tracking-wider hover:animate-brutal-bounce hover:bg-accent hover:px-2 transition-all">{data.community.name}</a>
-                   <span class="mx-3 text-text font-semibold text-brutal-md">/</span>
-                   <span class="text-brutal-lg text-text font-bold">{data.job.title}</span>
-               </div>
-                <a
-                    href="/{data.community.slug}"
-                    class="bg-surface text-text px-4 py-2 border-3 border-border font-semibold tracking-wide shadow-brutal-sm hover:shadow-brutal-hover hover:translate-x-1 hover:translate-y-1 transition-all duration-150 rounded-brutal"
-                >
+				<div class="flex items-center">
+					<a href="/" class="text-xl md:text-brutal-xl text-text font-black uppercase tracking-wider hover:bg-secondary hover:px-2  hover:text-green-400 transition-all">FREN.WORK</a>
+				   <span class="mx-2 md:mx-3 text-text font-semibold text-sm md:text-brutal-md">/</span>
+				   <a href="/{data.community.slug}" class="text-base md:text-brutal-lg text-text font-bold tracking-wider hover:animate-brutal-bounce hover:bg-accent hover:px-2 transition-all">{data.community.name}</a>
+				   <span class="mx-2 md:mx-3 text-text font-semibold text-sm md:text-brutal-md">/</span>
+				   <span class="text-sm md:text-brutal-lg text-text font-bold">{data.job.title}</span>
+			   </div>
+				<a
+					href="/{data.community.slug}"
+					class="bg-surface text-text px-3 md:px-4 py-2 border-3 border-border font-semibold tracking-wide shadow-brutal-sm hover:shadow-brutal-hover hover:translate-x-1 hover:translate-y-1 transition-all duration-150 rounded-brutal whitespace-nowrap text-sm md:text-base"
+				>
                     Back to Jobs
                 </a>
             </div>
@@ -84,12 +84,12 @@
             </div>
         {/if}
 
-        <div class="bg-surface border-3 border-border shadow-brutal-card rounded-brutal-lg overflow-hidden">
+		<div class="bg-surface border-3 border-border shadow-brutal-card rounded-brutal-lg overflow-hidden">
             <!-- Job Header -->
-            <div class="bg-green-400 border-b-3 border-border px-6 py-6">
-                <div class="flex items-start justify-between">
+			<div class="bg-green-400 border-b-3 border-border px-6 py-6">
+				<div class="flex flex-col md:flex-row md:items-start md:justify-between">
                     <div>
-                        <h1 class="text-xl font-bold text-text py-4">{data.job.title}</h1>
+						<h1 class="text-lg md:text-xl font-bold text-text py-4">{data.job.title}</h1>
                         <!-- <div class="flex flex-wrap items-center gap-3">
                             {#if data.job.job_type}
                                 <span class="bg-brutal-cyan text-white px-3 py-1 font-semibold text-brutal-sm rounded-brutal">
@@ -118,10 +118,10 @@
                             {/if}
                         </div> -->
                     </div>
-                    <div class="text-right bg-surface text-text px-4 py-3 border-3 border-border shadow-brutal-soft rounded-brutal">
-                        <div class="text-brutal-sm font-semibold">Posted</div>
-                        <div class="text-brutal-md font-semibold">{formatDate(data.job.created_at)}</div>
-                    </div>
+					<div class="md:text-right bg-surface text-text px-3 md:px-4 py-2 md:py-3 border-3 border-border shadow-brutal-soft rounded-brutal mt-3 md:mt-0 self-start md:self-auto">
+						<div class="text-xs md:text-brutal-sm font-semibold">Posted</div>
+						<div class="text-sm md:text-brutal-md font-semibold">{formatDate(data.job.created_at)}</div>
+					</div>
                 </div>
             </div>
 

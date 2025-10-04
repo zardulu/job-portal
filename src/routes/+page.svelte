@@ -10,7 +10,7 @@
 		return src.replace('/pepes/', '/pepes_optimized/').replace('.png', '');
 	}
 
-	const pepeImages = [
+	const pepeImagesDesktop = [
 		{ src: '/pepes/pepe1.png', top: '8%', left: '20%', rotate: -10, width: 200 },
 		{ src: '/pepes/pepe2.png', top: '10%', left: '78%', rotate: 8, width: 250 },
 		{ src: '/pepes/pepe3.png', top: '65%', left: '10%', rotate: 6, width: 250 },
@@ -18,6 +18,29 @@
 		{ src: '/pepes/pepe5.png', top: '30%', left: '5%', rotate: 12, width: 250 },
 		{ src: '/pepes/pepe6.png', top: '65%', left: '80%', rotate: -12, width: 250 },
 	];
+
+	const pepeImagesMobile = [
+		{ src: '/pepes/pepe1.png', top: '5%', left: '5%', rotate: -10, width: 120 },
+		{ src: '/pepes/pepe2.png', top: '8%', left: '70%', rotate: 8, width: 140 },
+		{ src: '/pepes/pepe3.png', top: '70%', left: '6%', rotate: 6, width: 140 },
+		{ src: '/pepes/pepe4.png', top: '42%', left: '72%', rotate: -6, width: 140 },
+		{ src: '/pepes/pepe5.png', top: '28%', left: '3%', rotate: 12, width: 130 },
+		{ src: '/pepes/pepe6.png', top: '74%', left: '75%', rotate: -12, width: 140 },
+	];
+
+	let isMobile = $state(false);
+	let pepeImages = $derived(isMobile ? pepeImagesMobile : pepeImagesDesktop);
+
+	import { onMount } from 'svelte';
+	onMount(() => {
+		if (typeof window !== 'undefined') {
+			const mq = window.matchMedia('(max-width: 768px)');
+			const update = () => (isMobile = mq.matches);
+			mq.addEventListener?.('change', update);
+			update();
+			return () => mq.removeEventListener?.('change', update);
+		}
+	});
 </script>
 
 <div class="min-h-screen bg-bg flex flex-col font-brutal">
@@ -33,7 +56,7 @@
 
 	<!-- Main content -->
 	<main class="relative flex flex-1 flex-col items-center justify-center gap-12 p-8">
-		<div class="pointer-events-none absolute inset-0">
+		<div class="pointer-events-none absolute inset-0 md:opacity-100">
 			{#each pepeImages as img (img.src)}
 				<img
 					src={`${optimizedBase(img.src)}-256.png`}
@@ -58,7 +81,7 @@
 		
 		<!-- Hero Section -->
 		<div class="relative z-10 text-center max-w-4xl">
-			<h2 class="text-6xl md:text-8xl font-black c text-text mb-8 uppercase tracking-tighter leading-none">
+			<h2 class="text-4xl md:text-8xl font-black c text-text mb-8 uppercase tracking-tighter leading-none">
 				WELCOME TO<br>
 				<span class="bg-green-400 text-white px-4 py-2 inline-block transform shadow-brutal">FREN.WORK</span>
 			</h2>
@@ -67,12 +90,12 @@
 			</p>
 			
 			<button 
-				class="text-text py-6 px-12 border-4 border-border font-bold text-brutal-lg tracking-wide shadow-brutal-soft hover:bg-green-400 hover:shadow-brutal-hover hover:translate-x-1 hover:translate-y-1 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:translate-x-0 disabled:hover:translate-y-0 disabled:hover:shadow-brutal-soft transition-all duration-150 rounded-brutal}"
+				class="text-text py-3 px-6 md:py-6 md:px-12 border-4 border-border font-bold text-base md:text-brutal-lg tracking-wide shadow-brutal-soft hover:bg-green-400 hover:shadow-brutal-hover hover:translate-x-1 hover:translate-y-1 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:translate-x-0 disabled:hover:translate-y-0 disabled:hover:shadow-brutal-soft transition-all duration-150 rounded-brutal"
 				onclick={createBoard}
 			>
 				+ CREATE JOB BOARD
 			</button>
-			<p class="text-brutal-sm text-green-400 mt-4 font-medium italic tracking-wide max-w-2xl mx-auto">
+			<p class="text-sm md:text-brutal-sm text-green-400 mt-4 font-medium italic tracking-wide max-w-2xl mx-auto">
 				No signups required!
 			</p>
 		</div>
