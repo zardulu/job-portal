@@ -43,7 +43,7 @@
 	});
 </script>
 
-<div class="min-h-screen bg-bg flex flex-col font-brutal">
+<div class="min-h-[100svh] bg-bg flex flex-col font-brutal overflow-x-hidden">
 	<!-- Brutalist Navbar -->
 	<nav class="bg-primary">
 		<!-- <div class="flex items-center justify-between p-6">
@@ -55,7 +55,7 @@
 	</nav>
 
 	<!-- Main content -->
-	<main class="relative flex flex-1 flex-col items-center justify-center gap-12 p-8">
+	<main class="relative flex flex-1 flex-col items-center justify-center gap-6 p-4 md:p-8 overflow-hidden">
 		<div class="pointer-events-none absolute inset-0 md:opacity-100">
 			{#each pepeImages as img (img.src)}
 				<img
@@ -81,7 +81,7 @@
 		
 		<!-- Hero Section -->
 		<div class="relative z-10 text-center max-w-4xl">
-			<h2 class="text-4xl md:text-8xl font-black c text-text mb-8 uppercase tracking-tighter leading-none">
+			<h2 class="text-3xl md:text-8xl font-black c text-text mb-6 uppercase tracking-tighter leading-none">
 				WELCOME TO<br>
 				<span class="bg-green-400 text-white px-4 py-2 inline-block transform shadow-brutal">FREN.WORK</span>
 			</h2>
@@ -95,7 +95,7 @@
 			>
 				+ CREATE JOB BOARD
 			</button>
-			<p class="text-sm md:text-brutal-sm text-green-400 mt-4 font-medium italic tracking-wide max-w-2xl mx-auto">
+			<p class="text-sm md:text-brutal-sm text-green-400 mt-3 font-medium italic tracking-wide max-w-2xl mx-auto">
 				No signups required!
 			</p>
 		</div>

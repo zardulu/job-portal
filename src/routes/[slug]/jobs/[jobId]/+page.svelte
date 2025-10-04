@@ -59,12 +59,11 @@
                     <span class="mx-3 text-text font-semibold text-brutal-md">/</span>
                     <span class="text-brutal-lg text-text font-bold">Job Details</span>
                 </div> -->
-				<div class="flex items-center">
+                <div class="flex items-center">
 					<a href="/" class="text-xl md:text-brutal-xl text-text font-black uppercase tracking-wider hover:bg-secondary hover:px-2  hover:text-green-400 transition-all">FREN.WORK</a>
 				   <span class="mx-2 md:mx-3 text-text font-semibold text-sm md:text-brutal-md">/</span>
 				   <a href="/{data.community.slug}" class="text-base md:text-brutal-lg text-text font-bold tracking-wider hover:animate-brutal-bounce hover:bg-accent hover:px-2 transition-all">{data.community.name}</a>
-				   <span class="mx-2 md:mx-3 text-text font-semibold text-sm md:text-brutal-md">/</span>
-				   <span class="text-sm md:text-brutal-lg text-text font-bold">{data.job.title}</span>
+                   <!-- Removed job title on mobile/top bar to simplify -->
 			   </div>
 				<a
 					href="/{data.community.slug}"
@@ -76,7 +75,7 @@
         </div>
     </nav>
 
-    <main class="max-w-4xl mx-auto px-4 py-6">
+    <main class="max-w-4xl mx-auto px-4 py-6 overflow-x-hidden">
         <!-- Success message -->
         {#if $page?.url?.searchParams?.get('updated')}
             <div class="bg-green-400 text-text px-6 py-3 border-3 border-border shadow-brutal-soft font-semibold mb-6 rounded-brutal">
@@ -130,7 +129,7 @@
                 <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
                     <!-- Main Content -->
                     <div class="lg:col-span-2">
-                        <div class="bg-bg border-3 border-border shadow-brutal-soft p-4 rounded-brutal">
+                        <div class="bg-bg border-0 md:border-3 md:border-border shadow-brutal-soft p-4 rounded-brutal">
                             <!-- <h2 class="text-brutal-lg font-semibold text-text mb-4 text-center bg-surface px-3 py-2 inline-block shadow-brutal-soft rounded-brutal">Job Description</h2> -->
                             <div class="">
                                 <div class="whitespace-pre-wrap text-text font-medium text-base leading-relaxed">
