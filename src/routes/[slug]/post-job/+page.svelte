@@ -26,6 +26,13 @@
     let turnstileToken = $state('');
     let turnstileLoaded = $state(false);
     let turnstileWidget: string | null = null;
+    
+    // Validation error states
+    let titleError = $state('');
+    let companyError = $state('');
+    let locationError = $state('');
+    let descriptionError = $state('');
+    let posterEmailError = $state('');
 
     onMount(() => {
         // Check if Turnstile script is already loaded
@@ -168,13 +175,20 @@
                         id="title"
                         name="title"
                         required
-                        title="Please enter the job title"
-                        oninvalid={(e) => e.currentTarget.setCustomValidity('Job title is required')}
-                        oninput={(e) => e.currentTarget.setCustomValidity('')}
+                        oninvalid={(e) => {
+                            e.preventDefault();
+                            titleError = 'Job title is required';
+                        }}
+                        oninput={() => {
+                            titleError = '';
+                        }}
                         value={form?.title || ''}
                         class="w-full px-4 py-3 border-3 border-border bg-bg text-text font-medium text-base placeholder-text/50 shadow-brutal-sm focus:shadow-brutal focus:translate-x-1 focus:translate-y-1 transition-all duration-100 rounded-brutal"
                         placeholder="Senior Frontend Developer"
                     />
+                    {#if titleError}
+                        <p class="text-brutal-xs text-red-500 mt-2 font-medium">{titleError}</p>
+                    {/if}
                 </div>
 
                 <!-- Company Name -->
@@ -187,13 +201,20 @@
                         id="company"
                         name="company"
                         required
-                        title="Please enter the company name"
-                        oninvalid={(e) => e.currentTarget.setCustomValidity('Company name is required')}
-                        oninput={(e) => e.currentTarget.setCustomValidity('')}
+                        oninvalid={(e) => {
+                            e.preventDefault();
+                            companyError = 'Company name is required';
+                        }}
+                        oninput={() => {
+                            companyError = '';
+                        }}
                         value={form?.company || ''}
                         class="w-full px-4 py-3 border-3 border-border bg-bg text-text font-medium text-base placeholder-text/50 shadow-brutal-sm focus:shadow-brutal focus:translate-x-1 focus:translate-y-1 transition-all duration-100 rounded-brutal"
                         placeholder="Tech Corp"
                     />
+                    {#if companyError}
+                        <p class="text-brutal-xs text-red-500 mt-2 font-medium">{companyError}</p>
+                    {/if}
                 </div>
 
                 <!-- Remote Toggle -->
@@ -214,15 +235,22 @@
                         name="location"
                         bind:value={selectedLocation}
                         required={!isRemote}
-                        title="Please select a location"
-                        oninvalid={(e) => e.currentTarget.setCustomValidity('Location is required')}
-                        oninput={(e) => e.currentTarget.setCustomValidity('')}
+                        oninvalid={(e) => {
+                            e.preventDefault();
+                            locationError = 'Location is required';
+                        }}
+                        oninput={() => {
+                            locationError = '';
+                        }}
                         class="w-full px-4 py-3 border-3 border-border bg-bg text-text font-medium text-base shadow-brutal-sm focus:shadow-brutal focus:translate-x-1 focus:translate-y-1 transition-all duration-100 rounded-brutal"
                     >
                         {#each countryOptions as opt}
                             <option value={opt.value}>{opt.label}</option>
                         {/each}
                     </select>
+                    {#if locationError}
+                        <p class="text-brutal-xs text-red-500 mt-2 font-medium">{locationError}</p>
+                    {/if}
                 </div>
 
                 <!-- Category -->
@@ -308,13 +336,20 @@
                         id="description"
                         name="description"
                         required
-                        title="Please enter a job description"
-                        oninvalid={(e) => e.currentTarget.setCustomValidity('Job description is required')}
-                        oninput={(e) => e.currentTarget.setCustomValidity('')}
+                        oninvalid={(e) => {
+                            e.preventDefault();
+                            descriptionError = 'Job description is required';
+                        }}
+                        oninput={() => {
+                            descriptionError = '';
+                        }}
                         rows="6"
                         class="w-full px-4 py-3 border-3 border-border bg-bg text-text font-medium text-base placeholder-text/50 shadow-brutal-sm focus:shadow-brutal focus:translate-x-1 focus:translate-y-1 transition-all duration-100 resize-none rounded-brutal"
                         placeholder="Describe the role, responsibilities, requirements..."
                     ></textarea>
+                    {#if descriptionError}
+                        <p class="text-brutal-xs text-red-500 mt-2 font-medium">{descriptionError}</p>
+                    {/if}
                 </div>
 
                 <!-- Contact Information -->
@@ -346,12 +381,21 @@
                         id="poster_email"
                         name="poster_email"
                         required
-                        title="Please enter a valid email address"
-                        oninvalid={(e) => e.currentTarget.setCustomValidity(e.currentTarget.validity.valueMissing ? 'Email is required - we need this to send you the edit link!' : 'Please enter a valid email address (e.g., your@email.com)')}
-                        oninput={(e) => e.currentTarget.setCustomValidity('')}
+                        oninvalid={(e) => {
+                            e.preventDefault();
+                            posterEmailError = e.currentTarget.validity.valueMissing 
+                                ? 'Email is required - we need this to send you the edit link!' 
+                                : 'Please enter a valid email address';
+                        }}
+                        oninput={() => {
+                            posterEmailError = '';
+                        }}
                         class="w-full px-4 py-3 border-3 border-border bg-bg text-text font-medium text-base placeholder-text/50 shadow-brutal-sm focus:shadow-brutal focus:translate-x-1 focus:translate-y-1 transition-all duration-100 rounded-brutal"
                         placeholder="your@email.com"
                     />
+                    {#if posterEmailError}
+                        <p class="text-brutal-xs text-red-500 mt-2 font-medium">{posterEmailError}</p>
+                    {/if}
                     <div class="bg-green-400 border-3 border-border p-3 mt-3 shadow-brutal-soft rounded-brutal">
                         <p class="text-text font-medium text-brutal-sm text-center">
                             We'll send you a magic link to edit this job posting

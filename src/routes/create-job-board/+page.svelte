@@ -8,6 +8,10 @@
 	let turnstileLoaded = $state(false);
 	let turnstileWidget: string | null = null;
 
+	// Validation error states
+	let nameError = $state('');
+	let emailError = $state('');
+
 	onMount(() => {
 		// Check if Turnstile script is already loaded
 		if (window.turnstile) {
@@ -140,13 +144,19 @@
 						id="name"
 						name="name"
 						required
-						title="Please enter a name for your job board"
-						oninvalid={(e) =>
-							e.currentTarget.setCustomValidity('Please enter a name for your board')}
-						oninput={(e) => e.currentTarget.setCustomValidity('')}
+						oninvalid={(e) => {
+							e.preventDefault();
+							nameError = 'Job board name is required';
+						}}
+						oninput={() => {
+							nameError = '';
+						}}
 						class="w-full px-4 py-3 border-3 border-border bg-surface text-text font-medium text-base placeholder-text/50 shadow-brutal-sm focus:shadow-brutal focus:translate-x-1 focus:translate-y-1 transition-all duration-100 rounded-brutal"
 						placeholder="Tech Jobs Board"
 					/>
+					{#if nameError}
+						<p class="text-brutal-xs text-red-500 mt-2 font-medium">{nameError}</p>
+					{/if}
 				</div>
 
 				<!-- Email -->
@@ -162,17 +172,21 @@
 						id="email"
 						name="email"
 						required
-						title="Please enter a valid email address"
-						oninvalid={(e) =>
-							e.currentTarget.setCustomValidity(
-								e.currentTarget.validity.valueMissing
-									? 'Email is required - we need this to send you the magic link!'
-									: 'Please enter a valid email address (e.g., admin@example.com)'
-							)}
-						oninput={(e) => e.currentTarget.setCustomValidity('')}
+						oninvalid={(e) => {
+							e.preventDefault();
+							emailError = e.currentTarget.validity.valueMissing
+								? 'Email is required - we need this to send you the magic link!'
+								: 'Please enter a valid email address (e.g., admin@example.com)';
+						}}
+						oninput={() => {
+							emailError = '';
+						}}
 						class="w-full px-4 py-3 border-3 border-border bg-bg text-text font-medium text-base placeholder-text/50 shadow-brutal-sm focus:shadow-brutal focus:translate-x-1 focus:translate-y-1 transition-all duration-100 rounded-brutal"
 						placeholder="admin@example.com"
 					/>
+					{#if emailError}
+						<p class="text-brutal-xs text-red-500 mt-2 font-medium">{emailError}</p>
+					{/if}
 					<div class=" p-1 mt-3 shadow-brutal-soft rounded-brutal">
 						<p class="text-text text-brutal-sm text-center">
 							We'll send a magic link to manage your board!
@@ -227,7 +241,7 @@
 			</form>
 
 			<!-- Steps Section -->
-			<div class="bg-green-400 border-3 border-border shadow-brutal-soft p-4 rounded-brutal">
+			<div class="mt-8 bg-green-400 border-3 border-border shadow-brutal-soft p-4 rounded-brutal">
 				<h3 class="font-semibold text-brutal-md mb-3 text-center">What Happens Next?</h3>
 				<div class="space-y-2 text-center">
 					<p class="text-text font-medium text-brutal-sm">1. Check your email for magic link</p>

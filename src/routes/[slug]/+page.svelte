@@ -103,8 +103,7 @@
 			<div
 				class="bg-green-400 text-text px-6 py-3 border-3 border-border shadow-brutal-soft font-semibold mb-6 rounded-brutal"
 			>
-				Job board created successfully! Check your email for the management link after a few
-				minutes. 🎉
+				Job board created successfully! Check your email for the management link. 🎉
 			</div>
 		{/if}
 
@@ -112,7 +111,7 @@
 			<div
 				class="bg-green-400 text-text px-6 py-3 border-3 border-border shadow-brutal-soft font-semibold mb-6 rounded-brutal"
 			>
-				Job posted successfully! Check your email for the edit link after a few minutes. 🎉
+				Job posted successfully! Check your email for the edit link. 🎉
 			</div>
 		{/if}
 
@@ -223,7 +222,7 @@
 			</div>
 
 			{#if filteredJobs.length === 0}
-				<div class="text-center py-12">
+				<div class="text-center py-12 bg-teal-50">
 					<p class="text-brutal-lg text-text font-semibold mb-6">
 						No jobs found matching your criteria.
 					</p>
