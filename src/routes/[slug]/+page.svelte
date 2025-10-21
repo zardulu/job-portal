@@ -77,13 +77,19 @@
 		<div class="max-w-6xl mx-auto px-4">
 			<div class="flex items-center justify-between py-3">
 				<div class="flex items-center">
-					 <a href="/" class="text-xl md:text-brutal-xl text-text font-black uppercase tracking-wider hover:bg-secondary hover:px-2  hover:text-green-400 transition-all">FREN.WORK</a>
+					<a
+						href="/"
+						class="text-xl md:text-brutal-xl text-text font-black uppercase tracking-wider hover:bg-secondary hover:px-2 hover:text-green-400 transition-all"
+						>FREN.WORK</a
+					>
 					<span class="mx-2 md:mx-3 text-text font-semibold text-sm md:text-brutal-md">/</span>
-					<h1 class="text-base md:text-brutal-lg text-text font-bold tracking-wider">{data.community.name}</h1>
+					<h1 class="text-base md:text-brutal-lg text-text font-bold tracking-wider">
+						{data.community.name}
+					</h1>
 				</div>
 				<button
 					onclick={createJob}
-					class="bg-green-400 text-text px-3 md:px-4 py-2 border-3 border-border font-semibold tracking-wide shadow-brutal-sm hover:bg-green-500 hover:shadow-brutal-hover hover:translate-x-1 hover:translate-y-1 transition-all duration-150 rounded-brutal whitespace-nowrap text-sm md:text-base"
+					class="bg-green-400 text-text px-3 md:px-4 py-2 border-3 border-border font-semibold tracking-wide shadow-brutal-sm hover:bg-green-500 hover:shadow-brutal-hover hover:translate-x-1 hover:translate-y-1 transition-all duration-150 rounded-brutal whitespace-nowrap text-sm md:text-base cursor-pointer"
 				>
 					+ Post Job
 				</button>
@@ -97,7 +103,8 @@
 			<div
 				class="bg-green-400 text-text px-6 py-3 border-3 border-border shadow-brutal-soft font-semibold mb-6 rounded-brutal"
 			>
-				Job board created successfully! Check your email for the management link after a few minutes. 🎉
+				Job board created successfully! Check your email for the management link after a few
+				minutes. 🎉
 			</div>
 		{/if}
 
@@ -228,10 +235,10 @@
 					</button>
 				</div>
 			{:else}
-				<div class="divide-y-3 divide-border">
+				<div class="divide-y-3 divide-border bg-teal-50">
 					{#each paginatedJobs as job}
-								<div class="p-6 hover:bg-surface/20 transition-all duration-150">
-									<div class="flex flex-col md:flex-row md:justify-between md:items-start gap-4">
+						<div class="p-6 hover:bg-surface/20 transition-all duration-150">
+							<div class="flex flex-col md:flex-row md:justify-between md:items-start gap-4">
 								<div class="flex-1">
 									<h3 class="text-brutal-md font-semibold text-text mb-1">{job.title}</h3>
 									{#if job.company}
@@ -240,9 +247,9 @@
 
 									<div class="flex flex-wrap gap-2 mb-3 items-center">
 										{#if job.job_type}
-										<span
-											class="bg-brutal-cyan text-text px-3 py-1 font-medium text-xs rounded-brutal bg-blue-200 whitespace-nowrap"
-										>
+											<span
+												class="bg-brutal-cyan text-text px-3 py-1 font-medium text-xs rounded-brutal bg-blue-200 whitespace-nowrap"
+											>
 												{job.job_type === 'Full-time'
 													? '💼'
 													: job.job_type === 'Part-time'
@@ -252,38 +259,38 @@
 											</span>
 										{/if}
 										{#if job.remote}
-										<span
-											class="bg-brutal-green text-text px-3 py-1 font-medium text-xs rounded-brutal bg-green-200 whitespace-nowrap"
-										>
+											<span
+												class="bg-brutal-green text-text px-3 py-1 font-medium text-xs rounded-brutal bg-green-200 whitespace-nowrap"
+											>
 												💻 Remote
 											</span>
 										{/if}
 										{#if job.location}
-										<span
-											class="bg-brutal-purple text-text px-3 py-1 font-medium text-xs rounded-brutal bg-orange-200 whitespace-nowrap"
-										>
+											<span
+												class="bg-brutal-purple text-text px-3 py-1 font-medium text-xs rounded-brutal bg-orange-200 whitespace-nowrap"
+											>
 												📍 {job.location}
 											</span>
 										{/if}
 										{#if job.category}
-										<span
-											class="bg-brutal-orange text-text px-3 py-1 font-medium text-xs rounded-brutal bg-yellow-200 whitespace-nowrap"
-										>
+											<span
+												class="bg-brutal-orange text-text px-3 py-1 font-medium text-xs rounded-brutal bg-yellow-200 whitespace-nowrap"
+											>
 												🏷️ {job.category}
 											</span>
 										{/if}
-									<span
-										class="bg-surface text-text px-3 py-1 font-medium text-xs rounded-brutal bg-green-200 whitespace-nowrap"
-									>
+										<span
+											class="bg-surface text-text px-3 py-1 font-medium text-xs rounded-brutal bg-green-200 whitespace-nowrap"
+										>
 											📅 {formatDate(job.created_at)}
 										</span>
 									</div>
 								</div>
 
-									<a
-										href="/{data.community.slug}/jobs/{job.id}"
-										class="bg-green-400 text-text px-4 py-2 border-3 border-border font-semibold tracking-wide shadow-brutal-sm hover:bg-green-500 hover:shadow-brutal-hover hover:translate-x-1 hover:translate-y-1 transition-all duration-150 md:ml-3 rounded-brutal self-start md:self-auto whitespace-nowrap"
-									>
+								<a
+									href="/{data.community.slug}/jobs/{job.id}"
+									class="bg-green-400 text-text px-4 py-2 border-3 border-border font-semibold tracking-wide shadow-brutal-sm hover:bg-green-500 hover:shadow-brutal-hover hover:translate-x-1 hover:translate-y-1 transition-all duration-150 md:ml-3 rounded-brutal self-start md:self-auto whitespace-nowrap"
+								>
 									View Details
 								</a>
 							</div>
@@ -341,4 +348,3 @@
 		</div>
 	</main>
 </div>
-

@@ -73,7 +73,7 @@
         <!-- Header -->
         <div class="mb-12">
             <h1 class="text-6xl font-black text-text mb-4 uppercase tracking-tighter">ADMIN DASHBOARD</h1>
-            <p class="text-brutal-lg text-text font-bold uppercase tracking-wide">MANAGE YOUR BRUTAL JOB BOARD</p>
+            <p class="text-brutal-lg text-text font-bold uppercase tracking-wide">MANAGE YOUR JOB BOARD</p>
         </div>
 
         <!-- Board Statistics -->
@@ -112,7 +112,7 @@
             {#if data.jobs.length === 0}
                 <div class="text-center py-16">
                     <div class="text-8xl mb-8">😴</div>
-                    <p class="text-brutal-lg font-black text-text uppercase mb-8">NO JOBS YET. TIME TO GET BRUTAL!</p>
+                    <p class="text-brutal-lg font-black text-text uppercase mb-8">NO JOBS YET</p>
                     <a
                         href="/{data.community.slug}/post-job"
                         class="bg-success text-text px-8 py-4 border-3 border-border font-black uppercase tracking-wide shadow-brutal-sm hover:shadow-brutal-hover hover:translate-x-2 hover:translate-y-2 transition-all duration-100"

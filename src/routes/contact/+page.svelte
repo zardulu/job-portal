@@ -18,7 +18,7 @@
 
 	<!-- Main Content -->
 	<main class="max-w-4xl mx-auto p-8">
-		<div class="bg-white border-4 border-border shadow-brutal p-8">
+		<div class="bg-teal-50 border-4 border-border shadow-brutal p-8">
 			<h1 class="text-brutal-xl font-black uppercase tracking-wider text-text mb-8 text-center">
 				CONTACT US
 			</h1>

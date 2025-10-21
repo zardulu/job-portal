@@ -90,7 +90,7 @@
 			</p>
 			
 			<button 
-				class="text-text py-3 px-6 md:py-6 md:px-12 border-4 border-border font-bold text-base md:text-brutal-lg tracking-wide shadow-brutal-soft hover:bg-green-400 hover:shadow-brutal-hover hover:translate-x-1 hover:translate-y-1 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:translate-x-0 disabled:hover:translate-y-0 disabled:hover:shadow-brutal-soft transition-all duration-150 rounded-brutal"
+				class="text-text bg-teal-50 py-3 px-6 md:py-6 md:px-12 border-4 border-border font-bold text-base md:text-brutal-lg tracking-wide shadow-brutal-soft hover:bg-green-400 hover:shadow-brutal-hover hover:translate-x-1 hover:translate-y-1 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:translate-x-0 disabled:hover:translate-y-0 disabled:hover:shadow-brutal-soft transition-all duration-150 rounded-brutal"
 				onclick={createBoard}
 			>
 				+ CREATE JOB BOARD

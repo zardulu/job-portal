@@ -128,7 +128,7 @@
             <div class="px-6 py-6">
                 <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
                     <!-- Main Content -->
-                    <div class="lg:col-span-2">
+                    <div class="lg:col-span-2 bg-teal-50">
                         <div class="bg-bg border-0 md:border-3 md:border-border shadow-brutal-soft p-4 rounded-brutal">
                             <!-- <h2 class="text-brutal-lg font-semibold text-text mb-4 text-center bg-surface px-3 py-2 inline-block shadow-brutal-soft rounded-brutal">Job Description</h2> -->
                             <div class="">
@@ -142,7 +142,7 @@
                     <!-- Sidebar -->
                     <div class="lg:col-span-1 space-y-4">
                         <!-- Job Details -->
-                        <div class="bg-surface border-3 border-border shadow-brutal-soft p-4 rounded-brutal">
+                        <div class="bg-teal-50 border-3 border-border shadow-brutal-soft p-4 rounded-brutal">
                             <h3 class="text-brutal-md font-semibold text-text mb-4 text-center">Job Details</h3>
                             <dl class="space-y-3">
                                 {#if data.job.job_type}

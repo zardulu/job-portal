@@ -45,6 +45,9 @@
 							name="title"
 							value={(form && 'title' in form ? form.title : undefined) || data.job.title}
 							required
+							title="Please enter the job title"
+							oninvalid={(e) => e.currentTarget.setCustomValidity('Job title is required')}
+							oninput={(e) => e.currentTarget.setCustomValidity('')}
 							class="w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-3 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-200 hover:border-gray-400"
 						/>
 					</div>
@@ -61,6 +64,9 @@
 							name="description"
 							rows="8"
 							required
+							title="Please enter a job description"
+							oninvalid={(e) => e.currentTarget.setCustomValidity('Job description is required')}
+							oninput={(e) => e.currentTarget.setCustomValidity('')}
 							class="w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-3 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-200 hover:border-gray-400 resize-vertical"
 							>{(form && 'description' in form ? form.description : undefined) ||
 								data.job.description}</textarea
@@ -79,6 +85,9 @@
 							name="contact_info"
 							rows="3"
 							required
+							title="Please enter contact information"
+							oninvalid={(e) => e.currentTarget.setCustomValidity('Contact information is required')}
+							oninput={(e) => e.currentTarget.setCustomValidity('')}
 							placeholder="How should candidates contact you? (email, application link, etc.)"
 							class="w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-3 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-200 hover:border-gray-400 resize-vertical placeholder:text-gray-400"
 							>{(form && 'contact_info' in form ? form.contact_info : undefined) ||

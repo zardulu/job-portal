@@ -131,7 +131,7 @@
     </nav>
 
     <main class="max-w-2xl mx-auto px-4 py-6">
-        <div class="bg-surface border-3 border-border shadow-brutal-card p-6 rounded-brutal-lg">
+        <div class="bg-teal-50 border-3 border-border shadow-brutal-card p-6 rounded-brutal-lg">
             <!-- Header -->
             <h1 class="text-brutal-xl font-bold text-text mb-6 text-center">
                 Post a New<br>
@@ -168,6 +168,9 @@
                         id="title"
                         name="title"
                         required
+                        title="Please enter the job title"
+                        oninvalid={(e) => e.currentTarget.setCustomValidity('Job title is required')}
+                        oninput={(e) => e.currentTarget.setCustomValidity('')}
                         value={form?.title || ''}
                         class="w-full px-4 py-3 border-3 border-border bg-bg text-text font-medium text-base placeholder-text/50 shadow-brutal-sm focus:shadow-brutal focus:translate-x-1 focus:translate-y-1 transition-all duration-100 rounded-brutal"
                         placeholder="Senior Frontend Developer"
@@ -184,6 +187,9 @@
                         id="company"
                         name="company"
                         required
+                        title="Please enter the company name"
+                        oninvalid={(e) => e.currentTarget.setCustomValidity('Company name is required')}
+                        oninput={(e) => e.currentTarget.setCustomValidity('')}
                         value={form?.company || ''}
                         class="w-full px-4 py-3 border-3 border-border bg-bg text-text font-medium text-base placeholder-text/50 shadow-brutal-sm focus:shadow-brutal focus:translate-x-1 focus:translate-y-1 transition-all duration-100 rounded-brutal"
                         placeholder="Tech Corp"
@@ -208,6 +214,9 @@
                         name="location"
                         bind:value={selectedLocation}
                         required={!isRemote}
+                        title="Please select a location"
+                        oninvalid={(e) => e.currentTarget.setCustomValidity('Location is required')}
+                        oninput={(e) => e.currentTarget.setCustomValidity('')}
                         class="w-full px-4 py-3 border-3 border-border bg-bg text-text font-medium text-base shadow-brutal-sm focus:shadow-brutal focus:translate-x-1 focus:translate-y-1 transition-all duration-100 rounded-brutal"
                     >
                         {#each countryOptions as opt}
@@ -299,6 +308,9 @@
                         id="description"
                         name="description"
                         required
+                        title="Please enter a job description"
+                        oninvalid={(e) => e.currentTarget.setCustomValidity('Job description is required')}
+                        oninput={(e) => e.currentTarget.setCustomValidity('')}
                         rows="6"
                         class="w-full px-4 py-3 border-3 border-border bg-bg text-text font-medium text-base placeholder-text/50 shadow-brutal-sm focus:shadow-brutal focus:translate-x-1 focus:translate-y-1 transition-all duration-100 resize-none rounded-brutal"
                         placeholder="Describe the role, responsibilities, requirements..."
@@ -334,6 +346,9 @@
                         id="poster_email"
                         name="poster_email"
                         required
+                        title="Please enter a valid email address"
+                        oninvalid={(e) => e.currentTarget.setCustomValidity(e.currentTarget.validity.valueMissing ? 'Email is required - we need this to send you the edit link!' : 'Please enter a valid email address (e.g., your@email.com)')}
+                        oninput={(e) => e.currentTarget.setCustomValidity('')}
                         class="w-full px-4 py-3 border-3 border-border bg-bg text-text font-medium text-base placeholder-text/50 shadow-brutal-sm focus:shadow-brutal focus:translate-x-1 focus:translate-y-1 transition-all duration-100 rounded-brutal"
                         placeholder="your@email.com"
                     />
@@ -392,16 +407,6 @@
                     </div>
                 {/if}
             </form>
-
-            <!-- Motivation Section -->
-            <div class="mt-8 bg-green-400 border-3 border-border shadow-brutal-soft p-4 rounded-brutal">
-                <h3 class="font-semibold text-brutal-md mb-3 text-center">Why Post Here?</h3>
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-3 text-center">
-                    <p class="text-text font-medium text-brutal-sm">Fast Posting</p>
-                    <p class="text-text font-medium text-brutal-sm">Cost Effective</p>
-                    <p class="text-text font-medium text-brutal-sm">Targeted Reach</p>
-                </div>
-            </div>
         </div>
     </main>
 </div>
